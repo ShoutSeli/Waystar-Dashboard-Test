@@ -37,7 +37,6 @@ const ClaimStatusMonitor: React.FC = () => {
 
   const filteredClaims = filter === "All" ? claims : claims.filter((c) => c.status === filter);
 
-  // Summary counts
   const approvedCount = claims.filter((c) => c.status === "Approved").length;
   const rejectedCount = claims.filter((c) => c.status === "Rejected").length;
   const pendingCount = claims.filter((c) => c.status === "Pending").length;
@@ -47,28 +46,28 @@ const ClaimStatusMonitor: React.FC = () => {
       <h2 className="text-2xl font-semibold mb-6">Claim Status Monitor</h2>
 
       {/* Summary Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white shadow rounded-lg p-4 text-center">
-          <h3 className="text-lg font-semibold text-gray-700">Approved</h3>
-          <p className="text-2xl font-bold text-green-600 mt-2">{approvedCount}</p>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-700">Approved</h3>
+          <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">{approvedCount}</p>
         </div>
         <div className="bg-white shadow rounded-lg p-4 text-center">
-          <h3 className="text-lg font-semibold text-gray-700">Rejected</h3>
-          <p className="text-2xl font-bold text-red-600 mt-2">{rejectedCount}</p>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-700">Rejected</h3>
+          <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">{rejectedCount}</p>
         </div>
         <div className="bg-white shadow rounded-lg p-4 text-center">
-          <h3 className="text-lg font-semibold text-gray-700">Pending</h3>
-          <p className="text-2xl font-bold text-gray-600 mt-2">{pendingCount}</p>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-700">Pending</h3>
+          <p className="text-xl sm:text-2xl font-bold text-gray-600 mt-2">{pendingCount}</p>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="mb-4 flex space-x-4">
+      <div className="mb-4 flex flex-wrap gap-2">
         {["All", "Approved", "Rejected", "Pending"].map((option) => (
           <button
             key={option}
             onClick={() => setFilter(option as typeof filter)}
-            className={`px-4 py-2 rounded-md border ${
+            className={`px-3 py-2 rounded-md border text-sm sm:text-base ${
               filter === option ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
@@ -77,25 +76,25 @@ const ClaimStatusMonitor: React.FC = () => {
         ))}
       </div>
 
-      {/* Table */}
-      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
-        <table className="min-w-full text-left text-sm sm:text-base">
+      {/* Responsive Table */}
+      <div className="bg-white shadow rounded-lg p-4 overflow-x-auto">
+        <table className="min-w-full text-left text-xs sm:text-sm md:text-base">
           <thead>
             <tr>
-              <th className="px-4 py-2 border-b">Claim ID</th>
-              <th className="px-4 py-2 border-b">Patient</th>
-              <th className="px-4 py-2 border-b">Status</th>
-              <th className="px-4 py-2 border-b">Reason</th>
-              <th className="px-4 py-2 border-b">Date</th>
+              <th className="px-2 sm:px-4 py-2 border-b">Claim ID</th>
+              <th className="px-2 sm:px-4 py-2 border-b">Patient</th>
+              <th className="px-2 sm:px-4 py-2 border-b">Status</th>
+              <th className="px-2 sm:px-4 py-2 border-b">Reason</th>
+              <th className="px-2 sm:px-4 py-2 border-b">Date</th>
             </tr>
           </thead>
           <tbody>
             {filteredClaims.map((c) => (
               <tr key={c.claimId}>
-                <td className="px-4 py-2 border-b">{c.claimId}</td>
-                <td className="px-4 py-2 border-b">{c.patientName}</td>
+                <td className="px-2 sm:px-4 py-2 border-b">{c.claimId}</td>
+                <td className="px-2 sm:px-4 py-2 border-b">{c.patientName}</td>
                 <td
-                  className={`px-4 py-2 border-b font-semibold ${
+                  className={`px-2 sm:px-4 py-2 border-b font-semibold ${
                     c.status === "Approved"
                       ? "text-green-600"
                       : c.status === "Rejected"
@@ -105,8 +104,8 @@ const ClaimStatusMonitor: React.FC = () => {
                 >
                   {c.status}
                 </td>
-                <td className="px-4 py-2 border-b">{c.reason}</td>
-                <td className="px-4 py-2 border-b">{c.date}</td>
+                <td className="px-2 sm:px-4 py-2 border-b">{c.reason}</td>
+                <td className="px-2 sm:px-4 py-2 border-b">{c.date}</td>
               </tr>
             ))}
           </tbody>
