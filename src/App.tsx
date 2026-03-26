@@ -3,6 +3,7 @@ import Dashboard from "./Components/Dashboard";
 import EligibilityCheck from "./Components/EligibilityCheck";
 import ClaimSubmission from "./Components/ClaimSubmission";
 import BillingDetails from "./Components/BillingDetails";
+import ClaimStatusMonitor from "./Components/ClaimStatusMonitor";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Route path="/eligibility" element={<EligibilityCheck />} />
         <Route path="/submission" element={<ClaimSubmission />} />
         <Route path="/billing" element={<BillingDetails />} />
-
+        <Route path="/status" element={<ClaimStatusMonitor />} />
       </Routes>
     </Router>
   );
