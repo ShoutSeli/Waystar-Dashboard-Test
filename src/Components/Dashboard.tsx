@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSettings } from "../context/SettingsContext";
 import { Pie, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -79,6 +80,7 @@ const Dashboard: React.FC = () => {
       },
     ],
   };
+  const { theme } = useSettings();
 
   return (
     <Layout currentPage="Dashboard">
