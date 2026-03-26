@@ -37,9 +37,30 @@ const ClaimStatusMonitor: React.FC = () => {
 
   const filteredClaims = filter === "All" ? claims : claims.filter((c) => c.status === filter);
 
+  // Summary counts
+  const approvedCount = claims.filter((c) => c.status === "Approved").length;
+  const rejectedCount = claims.filter((c) => c.status === "Rejected").length;
+  const pendingCount = claims.filter((c) => c.status === "Pending").length;
+
   return (
     <Layout currentPage="Claim Status Monitor">
       <h2 className="text-2xl font-semibold mb-6">Claim Status Monitor</h2>
+
+      {/* Summary Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+        <div className="bg-white shadow rounded-lg p-4 text-center">
+          <h3 className="text-lg font-semibold text-gray-700">Approved</h3>
+          <p className="text-2xl font-bold text-green-600 mt-2">{approvedCount}</p>
+        </div>
+        <div className="bg-white shadow rounded-lg p-4 text-center">
+          <h3 className="text-lg font-semibold text-gray-700">Rejected</h3>
+          <p className="text-2xl font-bold text-red-600 mt-2">{rejectedCount}</p>
+        </div>
+        <div className="bg-white shadow rounded-lg p-4 text-center">
+          <h3 className="text-lg font-semibold text-gray-700">Pending</h3>
+          <p className="text-2xl font-bold text-gray-600 mt-2">{pendingCount}</p>
+        </div>
+      </div>
 
       {/* Filter Bar */}
       <div className="mb-4 flex space-x-4">
