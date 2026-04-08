@@ -25,19 +25,24 @@ const ClaimSubmission: React.FC = () => {
     { id: "C-2013", patient: "Jennifer Alhassan", amount: 1300, status: "Pending" },
   ]);
 
-  const submitClaim = (id: string) => {
-    setClaims((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status: "Submitted" } : c
-      )
-    );
+  const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
+
+  const confirmSubmission = () => {
+    if (selectedClaim) {
+      setClaims((prev) =>
+        prev.map((c) =>
+          c.id === selectedClaim.id ? { ...c, status: "Submitted" } : c
+        )
+      );
+      setSelectedClaim(null);
+    }
   };
 
   return (
     <Layout currentPage="Claim Submission">
       <div className="bg-white m-10 shadow rounded-lg p-6 overflow-x-auto">
         <table className="min-w-full text-left text-sm sm:text-base">
-          <thead>
+          <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
             <tr>
               <th className="px-4 py-2 border-b">Claim ID</th>
               <th className="px-4 py-2 border-b">Patient</th>
@@ -48,7 +53,7 @@ const ClaimSubmission: React.FC = () => {
           </thead>
           <tbody>
             {claims.map((claim) => (
-              <tr key={claim.id}>
+              <tr key={claim.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                 <td className="px-4 py-2 border-b">{claim.id}</td>
                 <td className="px-4 py-2 border-b">{claim.patient}</td>
                 <td className="px-4 py-2 border-b font-semibold text-blue-600">
@@ -66,10 +71,10 @@ const ClaimSubmission: React.FC = () => {
                 <td className="px-4 py-2 border-b">
                   {claim.status === "Pending" ? (
                     <button
-                      onClick={() => submitClaim(claim.id)}
+                      onClick={() => setSelectedClaim(claim)}
                       className="px-3 py-1 bg-color-1 text-white rounded hover:bg-blue-700 transition"
                     >
-                      Submit
+                      Review & Submit
                     </button>
                   ) : (
                     <span className="text-sm text-gray-500">✓ Submitted</span>
@@ -80,6 +85,37 @@ const ClaimSubmission: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Review Modal */}
+      {selectedClaim && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">
+              Review Claim Before Submitting
+            </h2>
+            <div className="space-y-3 text-gray-700 dark:text-gray-200">
+              <p><strong>Claim ID:</strong> {selectedClaim.id}</p>
+              <p><strong>Patient:</strong> {selectedClaim.patient}</p>
+              <p><strong>Bill Amount:</strong> ${selectedClaim.amount.toLocaleString()}</p>
+              <p><strong>Status:</strong> {selectedClaim.status}</p>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setSelectedClaim(null)}
+                className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmSubmission}
+                className="px-4 py-2 rounded-md bg-color-1 text-white hover:bg-blue-700 transition"
+              >
+                Confirm Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
