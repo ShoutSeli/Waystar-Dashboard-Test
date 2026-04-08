@@ -172,8 +172,7 @@ const BillingDetails: React.FC = () => {
 
   return (
     <Layout currentPage="Billing Details">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-
+      <div className="bg-white m-10 dark:bg-gray-800 rounded-xl shadow-md p-6">
         <div className="overflow-x-auto max-h-[500px]">
   <table className="min-w-full text-left text-sm sm:text-base border-collapse">
     <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">

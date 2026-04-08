@@ -1,6 +1,48 @@
 @import "tailwindcss";
 
-@layer theme {
+@theme {
+  /* Colors */
+  --color-primary:   #8B86BF;
+  --color-secondary: #3D3B5B;
+  --color-color-1:   #3D3B5B;
+  --color-color-2:   #8B86BF;
+  --color-color-3:   #BBB7EB;
+  --color-color-4:   #E6E4FF;
+  --color-color-5:   #F6F4FC;
+  --color-color-6:   #868499;
+
+  /* Font family */
+  --font-family-nohemi: 'Nohemi', sans-serif;
+
+  /* Font sizes */
+  --font-size-h1:               2.75rem;
+  --font-size-h2:               2.143rem;
+  --font-size-h3:               1.5rem;
+  --font-size-h4:               1.25rem;
+  --font-size-body-large:       1.142rem;
+  --font-size-body-normal:      1rem;
+  --font-size-body-small:       0.857rem;
+  --font-size-body-extra-small: 0.714rem;
+
+  /* Spacing & layout */
+  --spacing-primary-width: 1260px;
+
+  /* Blur */
+  --blur-custom: 10px;
+}
+
+@font-face {
+  font-family: 'Nohemi';
+  src: url('./assets/Fonts/Nohemi-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: var(--font-family-nohemi);
+}
+
+/*@layer theme {
   :root {
     color-scheme: light;
   }
@@ -14,4 +56,4 @@
   html.dark {
     color-scheme: dark;
   }
-}
+} */

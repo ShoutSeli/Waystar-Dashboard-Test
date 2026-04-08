@@ -314,9 +314,9 @@ const InsurancePayerView: React.FC = () => {
   const departments = ["All", ...new Set(payers.map((p) => p.department))];
 
   return (
-    <Layout currentPage="Insurance / Payer View">
+    <Layout currentPage="Insurance/Payer View">
       {/* Summary Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h3 className="text-base sm:text-lg font-semibold text-gray-700">Total Claims</h3>
           <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-2">{totalClaims}</p>
@@ -332,7 +332,7 @@ const InsurancePayerView: React.FC = () => {
       </div>
 
       {/* Search + Filter + Export */}
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="m-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <input
           type="text"
           placeholder="Search by patient or insurance company..."
@@ -353,14 +353,14 @@ const InsurancePayerView: React.FC = () => {
         </select>
         <button
           onClick={exportCSV}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm sm:text-base hover:bg-blue-700"
+          className="px-4 py-2 bg-color-1 text-white rounded-md text-sm sm:text-base hover:bg-blue-700"
         >
           Export CSV
         </button>
       </div>
 
       {/* Responsive Table */}
-      <div className="bg-white shadow rounded-lg p-4 overflow-x-auto">
+      <div className="bg-white m-10 shadow rounded-lg p-4 overflow-x-auto">
         <table className="min-w-full text-left text-xs sm:text-sm md:text-base">
           <thead>
             <tr>

@@ -36,10 +36,8 @@ const RejectionReview: React.FC = () => {
 
   return (
     <Layout currentPage="Rejection Review">
-      <h2 className="text-2xl font-semibold mb-6">Rejection Review</h2>
-
       {/* Summary Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-10">
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h3 className="text-base sm:text-lg font-semibold text-gray-700">Total Rejections</h3>
           <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">{rejections.length}</p>
@@ -59,7 +57,7 @@ const RejectionReview: React.FC = () => {
       </div>
 
       {/* Responsive Table */}
-      <div className="bg-white shadow rounded-lg p-4 overflow-x-auto">
+      <div className="bg-white m-10 shadow rounded-lg p-4 overflow-x-auto">
         <table className="min-w-full text-left text-xs sm:text-sm md:text-base">
           <thead>
             <tr>

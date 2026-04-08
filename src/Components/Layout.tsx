@@ -11,8 +11,6 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 
-import logo from "../assets/Images/icon_waystar.jpg";
-
 interface LayoutProps {
   children: React.ReactNode;
   currentPage: string;
@@ -33,43 +31,48 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-screen font-nohemi bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        } transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 shadow-lg w-64 z-40`}
-      >
-        <div className="p-4 flex items-center space-x-2 translate-x-5 translate-y-3 dark:border-gray-700">
-          <img src={logo} alt="logo" className="block w-5 h-5 rounded"/>
-          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-            WAYSTAR
-          </span>
+      <aside className="fixed inset-y-0 left-0 flex z-40">
+        {/* Secondary Slim Sidebar */}
+        <div className="w-10 bg-gradient-to-b from-color-3 to-color-4 dark:bg-gray-700 flex flex-col items-center py-4 space-y-6"></div>
+        {/* Primary Sidebar */}
+        <div className="w-64 bg-color-5 dark:bg-gray-800 shadow-lg flex flex-col">
+          <div className="flex items-center justify-center h-16 px-4">
+            <div className="-translate-x-18">
+              <svg className="w-27 h-10 fill-current text-primary">
+              <use href="/src/assets/icons/icons.svg#oght-icon" />
+              </svg>
+              </div>
+              <div className="flex -translate-x-18">
+            <img src="src/assets/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
+            <h1 className="text-xl font-bold text-gray-700 dark:text-blue-400">Waystar</h1>
+            </div>
+          </div>
+          <nav className="mt-6 flex-1">
+            <ul className="space-y-2">
+              {navItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-md ${
+                      currentPage === item.name ? "dark:bg-gray-700 font-semibold ml-10" : ""
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5 mr-3 text-gray-700 dark:text-blue-400" />
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <nav className="mt-6">
-          <ul className="space-y-2">
-            {navItems.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-md ${
-                    currentPage === item.name ? "bg-blue-100 dark:bg-gray-700 font-semibold" : ""
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <item.icon className="h-5 w-5 mr-3 text-blue-600 dark:text-blue-400" />
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col md:ml-64">
-        {/* Topbar */}
-        <header className="flex items-center justify-between bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6">
+      <div className="flex-1 flex flex-col bg-white md:ml-64">
+        {/* Header (always visible) */}
+        <header className="flex items-center justify-between dark:bg-gray-800 shadow px-4 py-3 md:px-6">
           <button
             className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -87,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
               )}
             </svg>
           </button>
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
+          <h2 className="text-lg ml-10 sm:text-xl font-bold text-gray-700 dark:text-gray-200">
             {currentPage}
           </h2>
           <div className="flex items-center space-x-4">
@@ -103,8 +106,8 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
         {/* Page content */}
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900">{children}</main>
 
-        {/* Footer */}
-        <footer className="bg-white dark:bg-gray-800 shadow-inner py-4">
+        {/* Footer (only at end of page) */}
+        <footer className="bg-white dark:bg-gray-800 shadow-inner py-4 mt-auto">
           <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
             © {new Date().getFullYear()} Business Hub. All rights reserved.
           </div>

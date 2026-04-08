@@ -23,7 +23,7 @@ const Settings = () => {
                 onClick={() => setActiveTab("preferences")}
                 className={`w-full text-left px-3 py-2 rounded-md ${
                   activeTab === "preferences"
-                    ? "bg-blue-500 text-white"
+                    ? "bg-color-1 text-white"
                     : "hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
@@ -35,7 +35,7 @@ const Settings = () => {
                 onClick={() => setActiveTab("notifications")}
                 className={`w-full text-left px-3 py-2 rounded-md ${
                   activeTab === "notifications"
-                    ? "bg-blue-500 text-white"
+                    ? "bg-color-1 text-white"
                     : "hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
@@ -60,13 +60,13 @@ const Settings = () => {
       onClick={() => setTheme("light")}
       className={`group relative px-6 py-3 rounded-2xl font-medium transition-all duration-300 ease-out transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
         theme === "light"
-          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/30"
+          ? "bg-gradient-to-r from-color-1 to-color-4 text-white shadow-lg shadow-blue-500/25 ring-2 ring-blue-500/30"
           : "bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm text-gray-700 dark:text-gray-200 border border-white/30 dark:border-gray-600/50 hover:border-blue-400/50 hover:bg-white/70 dark:hover:bg-gray-700/70 shadow-lg hover:shadow-xl"
       }`}
     >
       {/* Active indicator */}
       {theme === "light" && (
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl blur opacity-75 animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-color-1 to-color-4 rounded-2xl blur opacity-75 animate-pulse" />
       )}
       
       {/* Icon */}
@@ -115,7 +115,7 @@ const Settings = () => {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as "en" | "fr")}
-                  className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white"
+                  className="w-full p-2 rounded-lg border-color-1 dark:bg-gray-700 dark:text-white"
                 >
                   <option value="en">English</option>
                   <option value="fr">French</option>
@@ -157,7 +157,7 @@ const Settings = () => {
                     />
                     <div
                       className={`w-11 h-6 rounded-full ${
-                        emailAlerts ? "bg-blue-600" : "bg-gray-400"
+                        emailAlerts ? "bg-color-1" : "bg-gray-400"
                       } relative transition`}
                     >
                       <div

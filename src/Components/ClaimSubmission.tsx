@@ -35,9 +35,7 @@ const ClaimSubmission: React.FC = () => {
 
   return (
     <Layout currentPage="Claim Submission">
-      <h2 className="text-2xl font-semibold mb-6">Claim Submission</h2>
-
-      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+      <div className="bg-white m-10 shadow rounded-lg p-6 overflow-x-auto">
         <table className="min-w-full text-left text-sm sm:text-base">
           <thead>
             <tr>
@@ -69,7 +67,7 @@ const ClaimSubmission: React.FC = () => {
                   {claim.status === "Pending" ? (
                     <button
                       onClick={() => submitClaim(claim.id)}
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                      className="px-3 py-1 bg-color-1 text-white rounded hover:bg-blue-700 transition"
                     >
                       Submit
                     </button>

@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
   return (
     <Layout currentPage="Dashboard">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 mr-10 ml-10">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
           <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             Submitted Claims
@@ -121,9 +121,8 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Pie Chart */}
       {/* Charts Section */}
-<section className="mb-10">
+<section className="mb-10 ml-10 mr-10">
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
     {/* Pie Chart Card */}
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-5">
@@ -147,9 +146,8 @@ const Dashboard: React.FC = () => {
   </div>
 </section>
 
-
       {/* Top Payers */}
-      <section className="mb-10">
+      <section className="mb-10 ml-10 mr-10">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
             Top Payers
@@ -172,7 +170,7 @@ const Dashboard: React.FC = () => {
       </section>
 
       {/* Recent Rejections */}
-      <section className="mb-20">
+      <section className="mb-20 ml-10 mr-10">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 overflow-x-auto">
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
             Recent Rejections

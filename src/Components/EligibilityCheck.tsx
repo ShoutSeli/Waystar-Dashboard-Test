@@ -44,9 +44,7 @@ const EligibilityCheck: React.FC = () => {
 
   return (
     <Layout currentPage="Eligibility Check">
-      <h2 className="text-2xl font-semibold mb-6">Patient Eligibility Check</h2>
-
-      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+      <div className="bg-white ml-10 shadow rounded-lg p-6 overflow-x-auto">
         <table className="min-w-full text-left text-sm sm:text-base">
           <thead>
             <tr>
@@ -75,7 +73,7 @@ const EligibilityCheck: React.FC = () => {
                 <td className="px-4 py-2 border-b">
                   <button
                     onClick={() => sendCheck(patient.id)}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    className="px-3 py-1 bg-color-1 text-white rounded hover:bg-blue-700 transition"
                   >
                     Check
                   </button>

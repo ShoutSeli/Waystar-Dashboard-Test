@@ -43,10 +43,8 @@ const ClaimStatusMonitor: React.FC = () => {
 
   return (
     <Layout currentPage="Claim Status Monitor">
-      <h2 className="text-2xl font-semibold mb-6">Claim Status Monitor</h2>
-
       {/* Summary Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-10">
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h3 className="text-base sm:text-lg font-semibold text-gray-700">Approved</h3>
           <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">{approvedCount}</p>
@@ -62,13 +60,13 @@ const ClaimStatusMonitor: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="m-10 flex flex-wrap gap-2">
         {["All", "Approved", "Rejected", "Pending"].map((option) => (
           <button
             key={option}
             onClick={() => setFilter(option as typeof filter)}
             className={`px-3 py-2 rounded-md border text-sm sm:text-base ${
-              filter === option ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
+              filter === option ? "bg-color-1 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
             {option}
@@ -77,7 +75,7 @@ const ClaimStatusMonitor: React.FC = () => {
       </div>
 
       {/* Responsive Table */}
-      <div className="bg-white shadow rounded-lg p-4 overflow-x-auto">
+      <div className="bg-white m-10 shadow rounded-lg p-4 overflow-x-auto">
         <table className="min-w-full text-left text-xs sm:text-sm md:text-base">
           <thead>
             <tr>
