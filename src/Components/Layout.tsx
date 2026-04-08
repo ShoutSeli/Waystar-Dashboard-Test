@@ -1,98 +1,115 @@
-import React, { useState, useEffect } from "react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  HomeIcon,
+  ClipboardDocumentListIcon,
+  CurrencyDollarIcon,
+  ChartBarIcon,
+  Cog6ToothIcon,
+  BellAlertIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/outline";
+
+import logo from "../assets/Images/icon_waystar.jpg";
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentPage: string; // pass the current page title here
+  currentPage: string;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-      setLastScrollY(window.scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
-    { name: "Dashboard", path: "/" },
-    { name: "Eligibility Check", path: "/eligibility" },
-    { name: "Claim Submission", path: "/submission" },
-    { name: "Billing Details", path: "/billing" },
-    { name: "Claim Status Monitor", path: "/status" },
-    { name: "Rejection Review", path: "/rejections" },
-    { name: "Insurance/Payer View", path: "/insurancepayerview" },
-    { name: "Settings", path: "/settings" },
+    { name: "Dashboard", path: "/", icon: HomeIcon },
+    { name: "Eligibility Check", path: "/eligibility", icon: ShieldCheckIcon },
+    { name: "Claim Submission", path: "/submission", icon: ClipboardDocumentListIcon },
+    { name: "Billing Details", path: "/billing", icon: CurrencyDollarIcon },
+    { name: "Claim Status Monitor", path: "/status", icon: ChartBarIcon },
+    { name: "Rejection Review", path: "/rejections", icon: BellAlertIcon },
+    { name: "Insurance/Payer View", path: "/insurancepayerview", icon: UserGroupIcon },
+    { name: "Settings", path: "/settings", icon: Cog6ToothIcon },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
-      {/* Navbar */}
-      <nav
-        className={`fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md transition-transform duration-300 z-50 ${
-          hidden ? "-translate-y-full" : "translate-y-0"
-        }`}
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        } transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 shadow-lg w-64 z-40`}
       >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Current Page Title */}
-          <h1 className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">
-            {currentPage}
-          </h1>
+        <div className="p-4 flex items-center space-x-2 translate-x-5 translate-y-3 dark:border-gray-700">
+          <img src={logo} alt="logo" className="block w-5 h-5 rounded"/>
+          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+            WAYSTAR
+          </span>
+        </div>
+        <nav className="mt-6">
+          <ul className="space-y-2">
+            {navItems.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.path}
+                  className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-md ${
+                    currentPage === item.name ? "bg-blue-100 dark:bg-gray-700 font-semibold" : ""
+                  }`}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <item.icon className="h-5 w-5 mr-3 text-blue-600 dark:text-blue-400" />
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
 
-          {/* Menu Icon */}
+      {/* Main content */}
+      <div className="flex-1 flex flex-col md:ml-64">
+        {/* Topbar */}
+        <header className="flex items-center justify-between bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6">
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {menuOpen ? (
-              <XMarkIcon className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-            ) : (
-              <Bars3Icon className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-            )}
+            <svg
+              className="h-6 w-6 text-gray-700 dark:text-gray-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {sidebarOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
           </button>
-        </div>
-
-        {/* Dropdown Menu */}
-        {menuOpen && (
-          <div className="bg-white dark:bg-gray-800 border-t dark:border-gray-700 shadow-md">
-            <ul className="flex flex-col space-y-2 p-4 text-gray-700 dark:text-gray-200 font-medium">
-              {navItems.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    to={item.path}
-                    className="hover:text-blue-600 dark:hover:text-blue-400"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
+            {currentPage}
+          </h2>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600 dark:text-gray-400">Admin</span>
+            <img
+              src="https://via.placeholder.com/32"
+              alt="User Avatar"
+              className="w-8 h-8 rounded-full border"
+            />
           </div>
-        )}
-      </nav>
+        </header>
 
-      {/* Page Content */}
-      <main className="flex-grow pt-24 px-4 sm:px-6 bg-gray-100 dark:bg-gray-900">{children}</main>
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900">{children}</main>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 shadow-inner py-4 mt-10">
-        <div className="max-w-7xl mx-auto px-4 text-center text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-          © {new Date().getFullYear()} Hospital Claims Portal. All rights reserved.
-        </div>
-      </footer>
+        {/* Footer */}
+        <footer className="bg-white dark:bg-gray-800 shadow-inner py-4">
+          <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © {new Date().getFullYear()} Business Hub. All rights reserved.
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };

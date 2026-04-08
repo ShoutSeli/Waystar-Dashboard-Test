@@ -53,7 +53,6 @@ const Dashboard: React.FC = () => {
     ],
   };
 
-  // Example monthly data for line chart
   const lineData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -80,65 +79,82 @@ const Dashboard: React.FC = () => {
       },
     ],
   };
+
   const { theme } = useSettings();
 
   return (
     <Layout currentPage="Dashboard">
-      <h2 className="text-2xl font-semibold mb-6">Analytics Dashboard</h2>
-
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-700">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             Submitted Claims
           </h3>
-          <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-4">
+          <p className="text-3xl font-bold text-blue-600 mt-4">
             {claimsData.submitted}
           </p>
-        </div>
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-700">
-            Rejected Claims
-          </h3>
-          <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-4">
-            {claimsData.rejected}
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Updated in real-time
           </p>
         </div>
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Rejected Claims
+          </h3>
+          <p className="text-3xl font-bold text-red-600 mt-4">
+            {claimsData.rejected}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Updated in real-time
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             Approved Claims
           </h3>
-          <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-4">
+          <p className="text-3xl font-bold text-green-600 mt-4">
             {claimsData.approved}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Updated in real-time
           </p>
         </div>
       </div>
 
-      {/* Pie Chart Section */}
-      <section className="mt-10">
-        <h3 className="text-xl font-semibold mb-4">Claim Distribution</h3>
-        <div className="bg-white shadow rounded-lg p-6 flex justify-center">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md">
-            <Pie data={pieData} />
-          </div>
+      {/* Pie Chart */}
+      {/* Charts Section */}
+<section className="mb-10">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {/* Pie Chart Card */}
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-5">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3">
+        Claim Distribution
+      </h3>
+      <div className="flex justify-center">
+        <div className="w-full max-w-xs sm:max-w-sm">
+          <Pie data={pieData} />
         </div>
-      </section>
+      </div>
+    </div>
 
-      {/* Line Chart Section */}
-      <section className="mt-10">
-        <h3 className="text-xl font-semibold mb-4">Monthly Claim Trends</h3>
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className="w-full">
-            <Line data={lineData} />
-          </div>
-        </div>
-      </section>
+    {/* Line Chart Card */}
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-5">
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3">
+        Monthly Claim Trends
+      </h3>
+      <Line data={lineData} />
+    </div>
+  </div>
+</section>
+
 
       {/* Top Payers */}
-      <section className="mt-10">
-        <h3 className="text-xl font-semibold mb-4">Top Payers</h3>
-        <div className="bg-white shadow rounded-lg p-6">
-          <ul className="space-y-2 text-gray-700 text-sm sm:text-base">
+      <section className="mb-10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
+            Top Payers
+          </h3>
+          <ul className="space-y-2 text-gray-700 dark:text-gray-200 text-sm sm:text-base">
             <li className="flex justify-between">
               <span>BlueCross</span>
               <span className="font-semibold">540</span>
@@ -156,11 +172,13 @@ const Dashboard: React.FC = () => {
       </section>
 
       {/* Recent Rejections */}
-      <section className="mt-10 mb-20">
-        <h3 className="text-xl font-semibold mb-4">Recent Rejections</h3>
-        <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+      <section className="mb-20">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 overflow-x-auto">
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
+            Recent Rejections
+          </h3>
           <table className="min-w-full text-left text-sm sm:text-base">
-            <thead>
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-4 py-2 border-b">Claim ID</th>
                 <th className="px-4 py-2 border-b">Reason</th>
@@ -168,17 +186,17 @@ const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-4 py-2 border-b">C-10234</td>
                 <td className="px-4 py-2 border-b">Missing documentation</td>
                 <td className="px-4 py-2 border-b">2026-03-20</td>
               </tr>
-              <tr>
+              <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-4 py-2 border-b">C-10235</td>
                 <td className="px-4 py-2 border-b">Invalid patient ID</td>
                 <td className="px-4 py-2 border-b">2026-03-21</td>
               </tr>
-              <tr>
+              <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-4 py-2 border-b">C-10236</td>
                 <td className="px-4 py-2 border-b">Policy expired</td>
                 <td className="px-4 py-2 border-b">2026-03-22</td>

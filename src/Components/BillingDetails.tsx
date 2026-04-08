@@ -11,7 +11,7 @@ interface BillingDetail {
   insurance: string;
   department: string;
   paymentMethod: string;
-  transactionId?: string; // only for non-cash payments
+  transactionId?: string;
   payer: string;
   coveragePercent: number;
   notes: string;
@@ -172,59 +172,62 @@ const BillingDetails: React.FC = () => {
 
   return (
     <Layout currentPage="Billing Details">
-      <h2 className="text-2xl font-semibold mb-6">Billing Details</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
 
-      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
-        <table className="min-w-full text-left text-sm sm:text-base">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border-b">Claim ID</th>
-              <th className="px-4 py-2 border-b">Patient</th>
-              <th className="px-4 py-2 border-b">Encounter ID</th>
-              <th className="px-4 py-2 border-b">Service Date</th>
-              <th className="px-4 py-2 border-b">Bill Amount ($)</th>
-              <th className="px-4 py-2 border-b">Status</th>
-              <th className="px-4 py-2 border-b">Insurance</th>
-              <th className="px-4 py-2 border-b">Department</th>
-              <th className="px-4 py-2 border-b">Payment Method</th>
-              <th className="px-4 py-2 border-b">Transaction ID</th>
-              <th className="px-4 py-2 border-b">Payer</th>
-              <th className="px-4 py-2 border-b">Coverage %</th>
-              <th className="px-4 py-2 border-b">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {details.map((d) => (
-              <tr key={d.claimId}>
-                <td className="px-4 py-2 border-b">{d.claimId}</td>
-                <td className="px-4 py-2 border-b">{d.patientName}</td>
-                <td className="px-4 py-2 border-b">{d.encounterId}</td>
-                <td className="px-4 py-2 border-b">{d.serviceDate}</td>
-                <td className="px-4 py-2 border-b font-semibold text-blue-600">
-                  ${d.amount.toLocaleString()}
-                </td>
-                <td
-                  className={`px-4 py-2 border-b font-semibold ${
-                    d.status === "Submitted"
-                      ? "text-green-600"
-                      : "text-gray-600"
-                  }`}
-                >
-                  {d.status}
-                </td>
-                <td className="px-4 py-2 border-b">{d.insurance}</td>
-                <td className="px-4 py-2 border-b">{d.department}</td>
-                <td className="px-4 py-2 border-b">{d.paymentMethod}</td>
-                <td className="px-4 py-2 border-b">
-                  {d.paymentMethod !== "Cash" ? d.transactionId : "—"}
-                </td>
-                <td className="px-4 py-2 border-b">{d.payer}</td>
-                <td className="px-4 py-2 border-b">{d.coveragePercent}%</td>
-                <td className="px-4 py-2 border-b">{d.notes}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto max-h-[500px]">
+  <table className="min-w-full text-left text-sm sm:text-base border-collapse">
+    <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
+      <tr>
+        <th className="px-4 py-2 border-b">Claim ID</th>
+        <th className="px-4 py-2 border-b">Patient</th>
+        <th className="px-4 py-2 border-b">Encounter ID</th>
+        <th className="px-4 py-2 border-b">Service Date</th>
+        <th className="px-4 py-2 border-b">Bill Amount ($)</th>
+        <th className="px-4 py-2 border-b">Status</th>
+        <th className="px-4 py-2 border-b">Insurance</th>
+        <th className="px-4 py-2 border-b">Department</th>
+        <th className="px-4 py-2 border-b">Payment Method</th>
+        <th className="px-4 py-2 border-b">Transaction ID</th>
+        <th className="px-4 py-2 border-b">Payer</th>
+        <th className="px-4 py-2 border-b">Coverage %</th>
+        <th className="px-4 py-2 border-b">Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {details.map((d) => (
+        <tr
+          key={d.claimId}
+          className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+        >
+          <td className="px-4 py-2 border-b">{d.claimId}</td>
+          <td className="px-4 py-2 border-b">{d.patientName}</td>
+          <td className="px-4 py-2 border-b">{d.encounterId}</td>
+          <td className="px-4 py-2 border-b">{d.serviceDate}</td>
+          <td className="px-4 py-2 border-b font-semibold text-blue-600">
+            ${d.amount.toLocaleString()}
+          </td>
+          <td
+            className={`px-4 py-2 border-b font-semibold ${
+              d.status === "Submitted" ? "text-green-600" : "text-gray-600"
+            }`}
+          >
+            {d.status}
+          </td>
+          <td className="px-4 py-2 border-b">{d.insurance}</td>
+          <td className="px-4 py-2 border-b">{d.department}</td>
+          <td className="px-4 py-2 border-b">{d.paymentMethod}</td>
+          <td className="px-4 py-2 border-b">
+            {d.paymentMethod !== "Cash" ? d.transactionId : "—"}
+          </td>
+          <td className="px-4 py-2 border-b">{d.payer}</td>
+          <td className="px-4 py-2 border-b">{d.coveragePercent}%</td>
+          <td className="px-4 py-2 border-b">{d.notes}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
       </div>
     </Layout>
   );

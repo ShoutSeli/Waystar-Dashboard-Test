@@ -315,8 +315,6 @@ const InsurancePayerView: React.FC = () => {
 
   return (
     <Layout currentPage="Insurance / Payer View">
-      <h2 className="text-2xl font-semibold mb-6">Insurance / Payer View</h2>
-
       {/* Summary Section */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white shadow rounded-lg p-4 text-center">
