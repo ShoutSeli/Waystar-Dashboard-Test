@@ -10,35 +10,35 @@ type SettingsType = {
 const SettingsContext = createContext<SettingsType | null>(null);
 
 export const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setThemeState] = useState<"light" | "dark">("light");
-  const [language, setLanguageState] = useState<"en" | "fr">("en");
+  const [theme, setThemeState] = useState<"light" | "dark">(() => {
+    // Initialise from localStorage immediately so there's no flash
+    return (localStorage.getItem("theme") as "light" | "dark") ?? "light";
+  });
 
-  // Load saved settings
+  const [language, setLanguageState] = useState<"en" | "fr">(() => {
+    return (localStorage.getItem("language") as "en" | "fr") ?? "en";
+  });
+
+  // Apply dark class to <html> whenever theme changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark";
-    const savedLang = localStorage.getItem("language") as "en" | "fr";
-
-    if (savedTheme) setThemeState(savedTheme);
-    if (savedLang) setLanguageState(savedLang);
-  }, []);
-
-  // Apply theme globally
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Persist language preference
   useEffect(() => {
     localStorage.setItem("language", language);
+    // Set the html lang attribute so screen readers & browser translate pick it up
+    document.documentElement.setAttribute("lang", language);
   }, [language]);
 
-  const setTheme = (theme: "light" | "dark") => {
-    setThemeState(theme);
-  };
-
-  const setLanguage = (lang: "en" | "fr") => {
-    setLanguageState(lang);
-  };
+  const setTheme = (t: "light" | "dark") => setThemeState(t);
+  const setLanguage = (l: "en" | "fr") => setLanguageState(l);
 
   return (
     <SettingsContext.Provider value={{ theme, language, setTheme, setLanguage }}>

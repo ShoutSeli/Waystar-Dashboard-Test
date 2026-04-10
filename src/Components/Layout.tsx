@@ -10,6 +10,7 @@ import {
   ShieldCheckIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
+import NotificationBell from "./NotificationBell";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,42 +21,45 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
-    { name: "Dashboard", path: "/", icon: HomeIcon },
-    { name: "Eligibility Check", path: "/eligibility", icon: ShieldCheckIcon },
-    { name: "Claim Submission", path: "/submission", icon: ClipboardDocumentListIcon },
-    { name: "Billing Details", path: "/billing", icon: CurrencyDollarIcon },
-    { name: "Claim Status Monitor", path: "/status", icon: ChartBarIcon },
-    { name: "Rejection Review", path: "/rejections", icon: BellAlertIcon },
-    { name: "Insurance/Payer View", path: "/insurancepayerview", icon: UserGroupIcon },
-    { name: "Settings", path: "/settings", icon: Cog6ToothIcon },
+    { name: "Dashboard",            path: "/",                  icon: HomeIcon },
+    { name: "Eligibility Check",    path: "/eligibility",       icon: ShieldCheckIcon },
+    { name: "Claim Submission",     path: "/submission",        icon: ClipboardDocumentListIcon },
+    { name: "Billing Details",      path: "/billing",           icon: CurrencyDollarIcon },
+    { name: "Claim Status Monitor", path: "/status",            icon: ChartBarIcon },
+    { name: "Rejection Review",     path: "/rejections",        icon: BellAlertIcon },
+    { name: "Insurance/Payer View", path: "/insurancepayerview",icon: UserGroupIcon },
+    { name: "Settings",             path: "/settings",          icon: Cog6ToothIcon },
   ];
 
   return (
     <div className="flex min-h-screen font-nohemi bg-gray-100 dark:bg-gray-900">
-      {/* Sidebar */}
+
+      {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <aside className="fixed inset-y-0 left-0 flex z-40">
-        {/* Secondary Slim Sidebar */}
-        <div className="w-10 bg-gradient-to-b from-color-3 to-color-4 dark:bg-gray-700 flex flex-col items-center py-4 space-y-6"></div>
-        {/* Primary Sidebar */}
+        {/* Slim accent strip */}
+        <div className="w-10 bg-gradient-to-b from-color-3 to-color-4 dark:bg-gray-700 flex flex-col items-center py-4 space-y-6" />
+
+        {/* Primary sidebar */}
         <div className="w-64 bg-color-5 dark:bg-gray-800 shadow-lg flex flex-col">
-          <div className="flex items-center justify-center h-16 px-4">
+          <div className="flex items-center justify-center h-16 px-4 mt-4">
             <div className="-translate-x-18">
               <svg className="w-27 h-10 fill-current text-primary">
-              <use href="/src/assets/icons/icons.svg#oght-icon" />
+                <use href="/src/assets/icons/icons.svg#oght-icon" />
               </svg>
-              </div>
-              <div className="flex -translate-x-18">
-            <img src="src/assets/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
-            <h1 className="text-xl font-bold text-gray-700 dark:text-blue-400">Waystar</h1>
+            </div>
+            <div className="flex -translate-x-18">
+              <img src="src/assets/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
+              <h1 className="text-xl font-bold text-gray-700 dark:text-blue-400">Waystar</h1>
             </div>
           </div>
+
           <nav className="mt-6 flex-1">
             <ul className="space-y-2">
               {navItems.map((item) => (
                 <li key={item.name}>
                   <Link
                     to={item.path}
-                    className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-md ${
+                    className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-md transition ${
                       currentPage === item.name ? "dark:bg-gray-700 font-semibold ml-10" : ""
                     }`}
                   >
@@ -69,20 +73,17 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col bg-white md:ml-64">
-        {/* Header (always visible) */}
-        <header className="flex items-center justify-between dark:bg-gray-800 shadow px-4 py-3 md:px-6">
+      {/* ── Main content ─────────────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 md:ml-74">
+
+        {/* Header */}
+        <header className="flex items-center justify-between mt-4 bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6">
+          {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            <svg
-              className="h-6 w-6 text-gray-700 dark:text-gray-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="h-6 w-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -90,23 +91,31 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
               )}
             </svg>
           </button>
+
           <h2 className="text-lg ml-10 sm:text-xl font-bold text-gray-700 dark:text-gray-200">
             {currentPage}
           </h2>
-          <div className="flex items-center space-x-4">
+
+          {/* Right side: bell + avatar */}
+          <div className="flex items-center gap-3">
+            {/* ── Notification Bell ── */}
+            <NotificationBell />
+
             <span className="text-sm text-gray-600 dark:text-gray-400">Admin</span>
             <img
               src="https://via.placeholder.com/32"
               alt="User Avatar"
-              className="w-8 h-8 rounded-full border"
+              className="w-8 h-8 rounded-full border border-gray-200"
             />
           </div>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900">
+          {children}
+        </main>
 
-        {/* Footer (only at end of page) */}
+        {/* Footer */}
         <footer className="bg-white dark:bg-gray-800 shadow-inner py-4 mt-auto">
           <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
             © {new Date().getFullYear()} Business Hub. All rights reserved.
