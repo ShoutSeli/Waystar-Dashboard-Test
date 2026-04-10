@@ -43,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-30 md:hidden sm:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -60,11 +60,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
         <div className="w-68 bg-color-5 dark:bg-gray-800 shadow-lg flex flex-col">
           <div className="flex items-center justify-center h-16 px-4 mt-4">
             <div className="-translate-x-18">
-              <svg className="w-27 h-10 fill-current text-primary">
+              <svg className="w-27 h-10 fill-current text-primary -translate-x-2">
                 <use href="/src/assets/icons/icons.svg#oght-icon" />
               </svg>
             </div>
-            <div className="flex -translate-x-18">
+            <div className="flex -translate-x-20">
               <img src="src/assets/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
               <h1 className="text-xl font-bold text-gray-700 dark:text-blue-400">Waystar</h1>
             </div>
