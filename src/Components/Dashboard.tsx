@@ -79,26 +79,26 @@ const Dashboard: React.FC = () => {
     <Layout currentPage="Dashboard">
 
       {/* Live indicator */}
-      <div className="flex items-center gap-2 m-10">
-        <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-100 shadow-sm px-3 py-1.5 rounded-full">
+      <div className="flex items-center gap-2 m-4 sm:m-6 md:m-8 lg:m-10">
+        <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm px-3 py-1.5 rounded-full">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Live · updates every 5 seconds
         </span>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 m-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 m-4 sm:m-6 md:m-8 lg:m-10">
         {[
-          { label: "Submitted Claims", value: claimsData.submitted.toLocaleString(), color: "text-blue-600",    bg: "bg-blue-50",    delta: "+5",
+          { label: "Submitted Claims", value: claimsData.submitted.toLocaleString(), color: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-900/20",    delta: "+5",
             icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
-          { label: "Approved Claims",  value: claimsData.approved.toLocaleString(),  color: "text-emerald-600", bg: "bg-emerald-50", delta: "+3",
+          { label: "Approved Claims",  value: claimsData.approved.toLocaleString(),  color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20", delta: "+3",
             icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label: "Rejected Claims",  value: claimsData.rejected.toLocaleString(),  color: "text-red-600",     bg: "bg-red-50",     delta: "+2",
+          { label: "Rejected Claims",  value: claimsData.rejected.toLocaleString(),  color: "text-red-600",     bg: "bg-red-50 dark:bg-red-900/20",     delta: "+2",
             icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label: "Approval Rate",    value: `${approvalRate}%`,                    color: "text-violet-600",  bg: "bg-violet-50",  delta: null,
+          { label: "Approval Rate",    value: `${approvalRate}%`,                    color: "text-violet-600",  bg: "bg-violet-50 dark:bg-violet-900/20",  delta: null,
             icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" },
         ].map(({ label, value, color, bg, icon, delta }) => (
-          <div key={label} className="bg-white shadow-sm border border-gray-100 rounded-xl p-5">
+          <div key={label} className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-5">
             <div className="flex items-start justify-between mb-3">
               <div className={`${bg} p-2.5 rounded-lg`}>
                 <svg className={`w-5 h-5 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -106,21 +106,21 @@ const Dashboard: React.FC = () => {
                 </svg>
               </div>
               {delta && (
-                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{delta}</span>
+                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">{delta}</span>
               )}
             </div>
-            <p className="text-sm text-gray-500 font-medium">{label}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
             <p className={`text-2xl font-bold ${color} mt-1`}>{value}</p>
           </div>
         ))}
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 m-10">
-        <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 m-4 sm:m-6 md:m-8 lg:m-10">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-gray-700">Claim Distribution</h3>
-            <span className="text-xs text-gray-400">All time</span>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Claim Distribution</h3>
+            <span className="text-xs text-gray-400 dark:text-gray-500">All time</span>
           </div>
           <div className="flex justify-center">
             <div className="w-56">
@@ -129,32 +129,32 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-5">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-gray-700">Monthly Claim Trends</h3>
-            <span className="text-xs text-gray-400">Jan – Jun 2026</span>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Monthly Claim Trends</h3>
+            <span className="text-xs text-gray-400 dark:text-gray-500">Jan – Jun 2026</span>
           </div>
           <Line data={lineData} options={lineOptions} />
         </div>
       </div>
 
       {/* Bottom row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 m-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 m-4 sm:m-6 md:m-8 lg:m-10">
 
         {/* Top Payers */}
-        <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-4 m-10">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-gray-700">Top Payers</h3>
-            <span className="text-xs text-gray-400">By claim volume</span>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Top Payers</h3>
+            <span className="text-xs text-gray-400 dark:text-gray-500">By claim volume</span>
           </div>
           <div className="space-y-4">
             {topPayers.map(({ name, count, pct }) => (
               <div key={name}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium text-gray-700">{name}</span>
-                  <span className="text-sm font-semibold text-gray-800">{count.toLocaleString()}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{name}</span>
+                  <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">{count.toLocaleString()}</span>
                 </div>
-                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-blue-500 rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
@@ -166,29 +166,29 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Recent Rejections */}
-        <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden m-10">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700">Recent Rejections</h3>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-600">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Recent Rejections</h3>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-300">
               {recentRejections.length} new
             </span>
           </div>
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Claim ID</th>
-                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Reason</th>
-                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+              <tr className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Claim ID</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Reason</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
               {recentRejections.map((r) => (
-                <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">{r.id}</span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300">{r.id}</span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{r.reason}</td>
-                  <td className="px-4 py-3 text-gray-400 text-xs tabular-nums">{r.date}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{r.reason}</td>
+                  <td className="px-4 py-3 text-gray-400 dark:text-gray-500 text-xs tabular-nums">{r.date}</td>
                 </tr>
               ))}
             </tbody>

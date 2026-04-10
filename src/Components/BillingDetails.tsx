@@ -19,8 +19,8 @@ interface BillingDetail {
 }
 
 const statusConfig: Record<string, { pill: string; dot: string }> = {
-  Submitted: { pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
-  Pending:   { pill: "bg-amber-50 text-amber-700",     dot: "bg-amber-400" },
+  Submitted: { pill: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300", dot: "bg-emerald-500" },
+  Pending:   { pill: "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300",     dot: "bg-amber-400" },
 };
 
 const BillingDetails: React.FC = () => {
@@ -57,23 +57,23 @@ const BillingDetails: React.FC = () => {
     <Layout currentPage="Billing Details">
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-4 sm:m-6 md:m-8 lg:m-10">
         {[
-          { label: "Total Billed",  value: `$${totalBilled.toLocaleString()}`, color: "text-blue-600",    bg: "bg-blue-50",
+          { label: "Total Billed",  value: `$${totalBilled.toLocaleString()}`, color: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-900/20",
             icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label: "Submitted",     value: submittedCount, color: "text-emerald-600", bg: "bg-emerald-50",
+          { label: "Submitted",     value: submittedCount, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20",
             icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label: "Pending",       value: pendingCount,   color: "text-amber-600",   bg: "bg-amber-50",
+          { label: "Pending",       value: pendingCount,   color: "text-amber-600",   bg: "bg-amber-50 dark:bg-amber-900/20",
             icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
         ].map(({ label, value, color, bg, icon }) => (
-          <div key={label} className="bg-white shadow-sm border border-gray-100 rounded-xl p-5 flex items-center gap-4">
+          <div key={label} className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-5 flex items-center gap-4">
             <div className={`${bg} p-3 rounded-lg`}>
               <svg className={`w-6 h-6 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">{label}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
               <p className={`text-2xl font-bold ${color}`}>{value}</p>
             </div>
           </div>
@@ -81,10 +81,10 @@ const BillingDetails: React.FC = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 m-10">
-        <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 m-4 sm:m-6 md:m-8 lg:m-10">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative max-w-xs w-full">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -92,64 +92,64 @@ const BillingDetails: React.FC = () => {
               placeholder="Search patient, claim, insurer…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             {["All", "Submitted", "Pending"].map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
-        <p className="text-xs text-gray-400 shrink-0">Showing {filtered.length} of {details.length} records</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 shrink-0">Showing {filtered.length} of {details.length} records</p>
       </div>
 
-      {/* Table */}
-      <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden m-10">
+      {/* Table - Desktop View */}
+      <div className="hidden md:block bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden m-4 sm:m-6 md:m-8 lg:m-10">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
+              <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600">
                 {["Claim ID","Patient","Encounter","Service Date","Amount","Status","Insurance","Department","Payment","Downloads","Details"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {filtered.length === 0 && (
-                <tr><td colSpan={11} className="px-4 py-12 text-center text-gray-400 text-sm">No billing records match your filters.</td></tr>
+                <tr><td colSpan={11} className="px-4 py-12 text-center text-gray-400 dark:text-gray-500 text-sm">No billing records match your filters.</td></tr>
               )}
               {filtered.map((d) => {
-                const cfg = statusConfig[d.status] ?? { pill: "bg-gray-100 text-gray-600", dot: "bg-gray-400" };
+                const cfg = statusConfig[d.status] ?? { pill: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300", dot: "bg-gray-400" };
                 return (
                   <React.Fragment key={d.claimId}>
-                    <tr className="hover:bg-gray-50 transition-colors">
+                    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">{d.claimId}</span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">{d.claimId}</span>
                       </td>
-                      <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{d.patientName}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">{d.encounterId}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs tabular-nums">{d.serviceDate}</td>
-                      <td className="px-4 py-3 font-semibold text-blue-700">${d.amount.toLocaleString()}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">{d.patientName}</td>
+                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">{d.encounterId}</td>
+                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs tabular-nums">{d.serviceDate}</td>
+                      <td className="px-4 py-3 font-semibold text-blue-700 dark:text-blue-300">${d.amount.toLocaleString()}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.pill}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                           {d.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{d.insurance}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 whitespace-nowrap">{d.insurance}</td>
                       <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">{d.department}</span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">{d.department}</span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{d.paymentMethod}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 whitespace-nowrap text-xs">{d.paymentMethod}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5">
-                          <button onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)} title="Download EDI file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                          <button onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)} title="Download EDI file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
                           </button>
-                          <button onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)} title="Download PDF file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition">
+                          <button onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)} title="Download PDF file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
                           </button>
                         </div>
@@ -157,7 +157,7 @@ const BillingDetails: React.FC = () => {
                       <td className="px-4 py-3">
                         <button
                           onClick={() => setExpandedRow(expandedRow === d.claimId ? null : d.claimId)}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
+                          className="p-1.5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -167,7 +167,7 @@ const BillingDetails: React.FC = () => {
                       </td>
                     </tr>
                     {expandedRow === d.claimId && (
-                      <tr className="bg-blue-50/40">
+                      <tr className="bg-blue-50/40 dark:bg-blue-900/20 border-b border-gray-100 dark:border-gray-700">
                         <td colSpan={11} className="px-6 py-4">
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                             {[
@@ -177,8 +177,8 @@ const BillingDetails: React.FC = () => {
                               { label: "Notes",          value: d.notes },
                             ].map(({ label, value }) => (
                               <div key={label}>
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{label}</p>
-                                <p className="text-gray-700">{value}</p>
+                                <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+                                <p className="text-gray-700 dark:text-gray-300">{value}</p>
                               </div>
                             ))}
                           </div>
@@ -191,9 +191,67 @@ const BillingDetails: React.FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gray-400">
+        <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-400 dark:text-gray-500">
           Showing {filtered.length} of {details.length} records
         </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden grid grid-cols-1 gap-3 m-4 sm:m-6">
+        {filtered.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center text-gray-400 dark:text-gray-500 text-sm">
+            No billing records match your filters.
+          </div>
+        ) : (
+          filtered.map((d) => {
+            const cfg = statusConfig[d.status] ?? { pill: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300", dot: "bg-gray-400" };
+            return (
+              <div key={d.claimId} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">{d.claimId}</span>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.pill}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+                    {d.status}
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Patient</p>
+                    <p className="text-gray-800 dark:text-gray-200 font-medium">{d.patientName}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Amount</p>
+                      <p className="text-gray-700 dark:text-gray-300 font-semibold">${d.amount.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Insurance</p>
+                      <p className="text-gray-700 dark:text-gray-300">{d.insurance}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Department</p>
+                      <p className="text-gray-700 dark:text-gray-300">{d.department}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Service Date</p>
+                      <p className="text-gray-700 dark:text-gray-300 text-xs">{d.serviceDate}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                  <button onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)} title="Download EDI" className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded hover:bg-blue-100 dark:hover:bg-blue-900/40 transition">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
+                  </button>
+                  <button onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)} title="Download PDF" className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs font-semibold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-900/40 transition">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </Layout>
   );

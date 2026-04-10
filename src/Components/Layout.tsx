@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   HomeIcon,
   ClipboardDocumentListIcon,
@@ -19,6 +19,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   const navItems = [
     { name: "Dashboard",            path: "/",                  icon: HomeIcon },
@@ -34,13 +40,24 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   return (
     <div className="flex min-h-screen font-nohemi bg-gray-100 dark:bg-gray-900">
 
+      {/* Mobile overlay backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <aside className="fixed inset-y-0 left-0 flex z-40">
+      <aside className={`fixed md:relative inset-y-0 left-0 flex z-40 transition-transform duration-300 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}>
         {/* Slim accent strip */}
         <div className="w-10 bg-gradient-to-b from-color-3 to-color-4 dark:bg-gray-700 flex flex-col items-center py-4 space-y-6" />
 
         {/* Primary sidebar */}
-        <div className="w-64 bg-color-5 dark:bg-gray-800 shadow-lg flex flex-col">
+        <div className="w-68 bg-color-5 dark:bg-gray-800 shadow-lg flex flex-col">
           <div className="flex items-center justify-center h-16 px-4 mt-4">
             <div className="-translate-x-18">
               <svg className="w-27 h-10 fill-current text-primary">
@@ -53,7 +70,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
             </div>
           </div>
 
-          <nav className="mt-6 flex-1">
+          <nav className="ml-4 mt-6 flex-1">
             <ul className="space-y-2">
               {navItems.map((item) => (
                 <li key={item.name}>
@@ -74,14 +91,15 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 md:ml-74">
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
 
         {/* Header */}
-        <header className="flex items-center justify-between mt-4 bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6">
+        <header className="flex items-center justify-between bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6 gap-4">
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle sidebar"
           >
             <svg className="h-6 w-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -92,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
             </svg>
           </button>
 
-          <h2 className="text-lg ml-10 sm:text-xl font-bold text-gray-700 dark:text-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-gray-200 flex-1 truncate">
             {currentPage}
           </h2>
 
@@ -101,11 +119,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
             {/* ── Notification Bell ── */}
             <NotificationBell />
 
-            <span className="text-sm text-gray-600 dark:text-gray-400">Admin</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 hidden sm:inline">Admin</span>
             <img
               src="https://via.placeholder.com/32"
               alt="User Avatar"
-              className="w-8 h-8 rounded-full border border-gray-200"
+              className="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600"
             />
           </div>
         </header>
