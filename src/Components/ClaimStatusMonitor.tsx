@@ -10,9 +10,9 @@ interface ClaimStatus {
 }
 
 const statusConfig = {
-  Approved: { pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
-  Rejected: { pill: "bg-red-50 text-red-700",         dot: "bg-red-500"     },
-  Pending:  { pill: "bg-amber-50 text-amber-700",     dot: "bg-amber-400"   },
+  Approved: { pill: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300", dot: "bg-emerald-500" },
+  Rejected: { pill: "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300",         dot: "bg-red-500"     },
+  Pending:  { pill: "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300",     dot: "bg-amber-400"   },
 };
 
 const ClaimStatusMonitor: React.FC = () => {
@@ -73,19 +73,19 @@ const ClaimStatusMonitor: React.FC = () => {
 
   return (
     <Layout currentPage="Claim Status Monitor">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 m-4 sm:m-6 md:m-8 lg:m-10">
         {[
-          { label:"Approved", value:approvedCount, color:"text-emerald-600", bg:"bg-emerald-50", icon:"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label:"Rejected", value:rejectedCount, color:"text-red-600",     bg:"bg-red-50",     icon:"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
-          { label:"Pending",  value:pendingCount,  color:"text-amber-600",   bg:"bg-amber-50",   icon:"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+          { label:"Approved", value:approvedCount, color:"text-emerald-600", bg:"bg-emerald-50 dark:bg-emerald-900/20", icon:"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+          { label:"Rejected", value:rejectedCount, color:"text-red-600",     bg:"bg-red-50 dark:bg-red-900/20",     icon:"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
+          { label:"Pending",  value:pendingCount,  color:"text-amber-600",   bg:"bg-amber-50 dark:bg-amber-900/20",   icon:"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
         ].map(({ label, value, color, bg, icon }) => (
-          <div key={label} className="bg-white shadow-sm border border-gray-100 rounded-xl p-5 flex items-center gap-4">
+          <div key={label} className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-5 flex items-center gap-4">
             <div className={`${bg} p-3 rounded-lg`}><svg className={`w-6 h-6 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg></div>
-            <div><p className="text-sm text-gray-500 font-medium">{label}</p><p className={`text-2xl font-bold ${color}`}>{value}</p></div>
+            <div><p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p><p className={`text-2xl font-bold ${color}`}>{value}</p></div>
           </div>
         ))}
       </div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 m-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 m-4 sm:m-6 md:m-8 lg:m-10">
         <div className="flex flex-wrap gap-2">
           {filterButtons.map(({ label, value, count, color }) => (
             <button key={value} onClick={() => setFilter(value)}
@@ -101,7 +101,7 @@ const ClaimStatusMonitor: React.FC = () => {
             className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
         </div>
       </div>
-      <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden m-10">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden m-4 sm:m-6 md:m-8 lg:m-10">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
