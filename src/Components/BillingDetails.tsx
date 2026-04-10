@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Layout from "./Layout";
+import { downloadClaimEDI, downloadClaimPDF } from "../utils/downloadClaim";
 
 interface BillingDetail {
   claimId: string;
@@ -111,14 +112,14 @@ const BillingDetails: React.FC = () => {
           <table className="min-w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                {["Claim ID","Patient","Encounter","Service Date","Amount","Status","Insurance","Department","Payment","Details"].map((h) => (
+                {["Claim ID","Patient","Encounter","Service Date","Amount","Status","Insurance","Department","Payment","Downloads","Details"].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.length === 0 && (
-                <tr><td colSpan={10} className="px-4 py-12 text-center text-gray-400 text-sm">No billing records match your filters.</td></tr>
+                <tr><td colSpan={11} className="px-4 py-12 text-center text-gray-400 text-sm">No billing records match your filters.</td></tr>
               )}
               {filtered.map((d) => {
                 const cfg = statusConfig[d.status] ?? { pill: "bg-gray-100 text-gray-600", dot: "bg-gray-400" };
@@ -144,6 +145,16 @@ const BillingDetails: React.FC = () => {
                       </td>
                       <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{d.paymentMethod}</td>
                       <td className="px-4 py-3">
+                        <div className="flex items-center gap-1.5">
+                          <button onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)} title="Download EDI file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
+                          </button>
+                          <button onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)} title="Download PDF file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
                         <button
                           onClick={() => setExpandedRow(expandedRow === d.claimId ? null : d.claimId)}
                           className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
@@ -157,7 +168,7 @@ const BillingDetails: React.FC = () => {
                     </tr>
                     {expandedRow === d.claimId && (
                       <tr className="bg-blue-50/40">
-                        <td colSpan={10} className="px-6 py-4">
+                        <td colSpan={11} className="px-6 py-4">
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                             {[
                               { label: "Transaction ID", value: d.paymentMethod !== "Cash" ? d.transactionId ?? "—" : "—" },

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Layout from "./Layout";
+import { downloadClaimEDI, downloadClaimPDF } from "../utils/downloadClaim";
 
 interface Rejection {
   claimId: string;
@@ -154,13 +155,14 @@ const RejectionReview: React.FC = () => {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Department</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rejection Reason</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Downloads</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-400 text-sm">
+                  <td colSpan={7} className="px-4 py-12 text-center text-gray-400 text-sm">
                     No rejections match your current filters.
                   </td>
                 </tr>
@@ -186,6 +188,16 @@ const RejectionReview: React.FC = () => {
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs tabular-nums">{r.rejectionDate}</td>
                     <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => downloadClaimEDI(r.claimId, r.patientName)} title="Download EDI file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
+                        </button>
+                        <button onClick={() => downloadClaimPDF(r.claimId, r.patientName, undefined, "Rejected")} title="Download PDF file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
                       <button
                         onClick={() => setExpandedRow(expandedRow === r.claimId ? null : r.claimId)}
                         className="flex items-center gap-1 text-xs text-blue-600 font-medium hover:underline"
@@ -200,7 +212,7 @@ const RejectionReview: React.FC = () => {
                   </tr>
                   {expandedRow === r.claimId && (
                     <tr className="bg-blue-50/40">
-                      <td colSpan={6} className="px-6 py-4">
+                      <td colSpan={7} className="px-6 py-4">
                         <div className="flex items-start gap-3">
                           <div className="bg-blue-100 p-1.5 rounded-lg shrink-0 mt-0.5">
                             <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

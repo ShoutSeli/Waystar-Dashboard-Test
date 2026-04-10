@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Layout from "./Layout";
 import { useNotifications } from "../context/NotificationContext";
+import { downloadClaimEDI, downloadClaimPDF } from "../utils/downloadClaim";
 
 interface ClaimStatus {
   claimId: string; patientName: string;
@@ -105,13 +106,13 @@ const ClaimStatusMonitor: React.FC = () => {
           <table className="min-w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                {["Claim ID","Patient","Status","Reason","Date","Update Status"].map(h => (
+                {["Claim ID","Patient","Status","Reason","Date","Update Status","Downloads"].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filteredClaims.length === 0 && (<tr><td colSpan={6} className="px-4 py-12 text-center text-gray-400 text-sm">No claims match your current filters.</td></tr>)}
+              {filteredClaims.length === 0 && (<tr><td colSpan={7} className="px-4 py-12 text-center text-gray-400 text-sm">No claims match your current filters.</td></tr>)}
               {filteredClaims.map(c => {
                 const cfg = statusConfig[c.status];
                 return (
@@ -132,6 +133,16 @@ const ClaimStatusMonitor: React.FC = () => {
                           </button>
                         </div>
                       ) : (<span className="text-xs text-gray-400 italic">Processed</span>)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => downloadClaimEDI(c.claimId, c.patientName)} title="Download EDI file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
+                        </button>
+                        <button onClick={() => downloadClaimPDF(c.claimId, c.patientName, undefined, c.status)} title="Download PDF file" className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
