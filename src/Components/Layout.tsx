@@ -21,11 +21,6 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Close sidebar when route changes on mobile
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [location.pathname]);
-
   const navItems = [
     { name: "Dashboard",            path: "/",                  icon: HomeIcon },
     { name: "Eligibility Check",    path: "/eligibility",       icon: ShieldCheckIcon },
@@ -38,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   ];
 
   return (
-    <div className="flex min-h-screen font-nohemi bg-gray-100 dark:bg-gray-900">
+    <div key={location.pathname} className="flex min-h-screen font-nohemi bg-gray-100 dark:bg-gray-900">
 
       {/* Mobile overlay backdrop */}
       {sidebarOpen && (
