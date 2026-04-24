@@ -45,9 +45,10 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       )}
 
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <aside className={`fixed md:relative inset-y-0 left-0 flex z-40 transition-transform duration-300 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      }`}>
+      <aside
+  className={`fixed md:fixed top-0 left-0 h-screen flex z-40 transition-transform duration-300 ${
+    sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+  }`}>
         {/* Slim accent strip */}
         <div className="w-10 bg-gradient-to-b from-color-3 to-color-4 dark:bg-gray-700 flex flex-col items-center py-4 space-y-6" />
 
@@ -86,10 +87,10 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 md:ml-72">
 
         {/* Header */}
-        <header className="flex items-center justify-between bg-white dark:bg-gray-800 shadow px-4 py-3 md:px-6 gap-4">
+        <header className="flex items-center justify-between bg-white dark:bg-gray-800 shadow px-4 py-6 md:px-6 gap-4">
           {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -105,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
             </svg>
           </button>
 
-          <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-gray-200 flex-1 truncate">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-gray-200 flex-1 truncate ml-10">
             {currentPage}
           </h2>
 
