@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
               )}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
-            <p className={`text-2xl font-bold ${color} mt-1`}>{value}</p>
+            <p className={`text-lg font-bold ${color} mt-1`}>{value}</p>
           </div>
         ))}
       </div>
@@ -156,7 +156,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                    className="h-full bg-orange-400 rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>

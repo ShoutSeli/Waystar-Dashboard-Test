@@ -111,7 +111,7 @@ const NotificationBell: React.FC = () => {
                   <button key={n.id} onClick={() => handleItemClick(n)}
                     className={`w-full text-left flex items-start gap-3 px-4 py-3 transition hover:bg-gray-50 dark:hover:bg-gray-700/50 ${!n.read ? "bg-blue-50/30 dark:bg-blue-900/10" : ""}`}>
                     <div className={`${cfg.bg} p-1.5 rounded-lg shrink-0 mt-0.5`}>
-                      <svg className={`w-4 h-4 ${cfg.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className={`w-10 h-10 ${cfg.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d={cfg.iconPath} />
                       </svg>
                     </div>

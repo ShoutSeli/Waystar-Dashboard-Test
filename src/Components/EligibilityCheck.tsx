@@ -108,7 +108,7 @@ const EligibilityCheck: React.FC = () => {
             </div>
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</p>
-              <p className={`text-2xl font-bold ${color}`}>{value}</p>
+              <p className={`text-lg font-bold ${color}`}>{value}</p>
             </div>
           </div>
         ))}

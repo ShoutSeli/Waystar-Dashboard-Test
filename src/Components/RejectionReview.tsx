@@ -79,7 +79,7 @@ const RejectionReview: React.FC = () => {
         ].map(({ label, value, color, bg, icon }) => (
           <div key={label} className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center gap-4">
             <div className={`${bg} p-2.5 rounded-lg shrink-0`}><svg className={`w-5 h-5 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg></div>
-            <div><p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</p><p className={`text-2xl font-bold ${color}`}>{value}</p></div>
+            <div><p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</p><p className={`text-lg font-bold ${color}`}>{value}</p></div>
           </div>
         ))}
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center gap-4">
