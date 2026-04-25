@@ -133,7 +133,7 @@ const Dashboard: React.FC = () => {
               )}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
-            <p className={`text-lg font-bold ${color} mt-1`}>{value}</p>
+            <p className={`text-base font-bold ${color} mt-1`}>{value}</p>
           </div>
         ))}
       </div>
