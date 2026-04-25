@@ -59,10 +59,10 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
               {/*<svg className="w-27 h-10 fill-current text-primary -translate-x-2">
                 <use href="/src/assets/icons/icons.svg#oght-icon" />
               </svg>*/}
-              <img src="src/assets/Images/MedSov-crop.jpeg" alt="MedSov Logo" className="w-10 h-8 fill-current text-primary -translate-x-3" />
+              <img src="/Images/MedSov-crop.jpeg" alt="MedSov Logo" className="w-10 h-8 fill-current text-primary -translate-x-3" />
             </div>
             <div className="flex -translate-x-18 mt-1">
-              <img src="src/assets/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
+              <img src="/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 mr-2" />
               <h1 className="text-xl font-bold text-gray-700 dark:text-blue-400">Waystar</h1>
             </div>
           </div>

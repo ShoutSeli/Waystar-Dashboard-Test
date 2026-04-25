@@ -22,6 +22,8 @@ const Dashboard: React.FC = () => {
     approved: 925,
   });
 
+  const [hiddenSegments, setHiddenSegments] = useState<Set<number>>(new Set());
+
   useEffect(() => {
     const interval = setInterval(() => {
       setClaimsData((prev) => ({
@@ -33,13 +35,34 @@ const Dashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const toggleSegment = (index: number) => {
+    setHiddenSegments((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
   const approvalRate = Math.round((claimsData.approved / claimsData.submitted) * 100);
 
+  const allLabels = ["Submitted", "Rejected", "Approved"];
+  const allData = [claimsData.submitted, claimsData.rejected, claimsData.approved];
+  const allColors = ["#3B82F6", "#EF4444", "#10B981"];
+
+  const filteredIndices = Array.from({ length: 3 }, (_, i) => i).filter(i => !hiddenSegments.has(i));
+  const filteredLabels = filteredIndices.map(i => allLabels[i]);
+  const filteredData = filteredIndices.map(i => allData[i]);
+  const filteredColors = filteredIndices.map(i => allColors[i]);
+
   const pieData = {
-    labels: ["Submitted", "Rejected", "Approved"],
+    labels: filteredLabels,
     datasets: [{
-      data: [claimsData.submitted, claimsData.rejected, claimsData.approved],
-      backgroundColor: ["#3B82F6", "#EF4444", "#10B981"],
+      data: filteredData,
+      backgroundColor: filteredColors,
       borderColor: ["#ffffff", "#ffffff", "#ffffff"],
       borderWidth: 3,
     }],
@@ -123,8 +146,50 @@ const Dashboard: React.FC = () => {
             <span className="text-xs text-gray-400 dark:text-gray-500">All time</span>
           </div>
           <div className="flex justify-center">
-            <div className="w-56">
-              <Pie data={pieData} options={{ plugins: { legend: { position: "bottom", labels: { boxWidth: 12, padding: 14, font: { size: 11 } } } } }} />
+            <div className="relative w-80 h-64">
+              <div style={{ position: 'absolute', inset: 0 }}>
+                <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
+              </div>
+
+              {/* Blue (Submitted) - right side */}
+              <div
+                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                style={{
+                  right: '-15px',
+                  top: '50%',
+                  transform: 'translateY(-50%)'
+                }}
+                onClick={() => toggleSegment(0)}
+              >
+                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[0] }} />
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">{allLabels[0]}</span>
+              </div>
+
+              {/* Red (Rejected) - bottom-left */}
+              <div
+                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                style={{
+                  left: '-5px',
+                  bottom: '-5px'
+                }}
+                onClick={() => toggleSegment(1)}
+              >
+                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[1] }} />
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">{allLabels[1]}</span>
+              </div>
+
+              {/* Green (Approved) - top-left */}
+              <div
+                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                style={{
+                  left: '-5px',
+                  top: '-5px'
+                }}
+                onClick={() => toggleSegment(2)}
+              >
+                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[2] }} />
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">{allLabels[2]}</span>
+              </div>
             </div>
           </div>
         </div>
