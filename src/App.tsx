@@ -6,10 +6,10 @@ import BillingDetails from "./Components/BillingDetails";
 import ClaimStatusMonitor from "./Components/ClaimStatusMonitor";
 import RejectionReview from "./Components/RejectionReview";
 import InsurancePayerView from "./Components/InsurancePayerView";
-import Settings from "./Components/Settings"; 
+import Settings from "./Components/Settings";
 
 function App() {
-  
+
   return (
     <Router>
       <Routes>

@@ -73,8 +73,8 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
                 <li key={item.name}>
                   <Link
                     to={item.path}
-                    className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 bg-red hover:bg-red-400 dark:hover:bg-gray-700 rounded-md transition ${
-                      currentPage === item.name ? "bg-red-400 text-white font-semibold" : ""
+                    className={`flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 bg-red hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition ${
+                      currentPage === item.name ? "text-red-500 font-semibold" : ""
                     }`}
                   >
                     <item.icon className="h-5 w-5 mr-3 text-gray-700 dark:text-blue-400" />

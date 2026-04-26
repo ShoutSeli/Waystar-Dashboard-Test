@@ -74,7 +74,7 @@ const BillingDetails: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
-              <p className={`text-lg font-bold ${color}`}>{value}</p>
+              <p className={`text-base font-bold ${color}`}>{value}</p>
             </div>
           </div>
         ))}
