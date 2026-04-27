@@ -145,7 +145,9 @@ const Dashboard: React.FC = () => {
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Claim Distribution</h3>
             <span className="text-xs text-gray-400 dark:text-gray-500">All time</span>
           </div>
-          <div className="flex justify-center">
+
+          {/* Large screen chart with positioned legend */}
+          <div className="hidden lg:flex justify-center">
             <div className="relative w-80 h-64">
               <div style={{ position: 'absolute', inset: 0 }}>
                 <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
@@ -190,6 +192,31 @@ const Dashboard: React.FC = () => {
                 <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[2] }} />
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">{allLabels[2]}</span>
               </div>
+            </div>
+          </div>
+
+          {/* Small and medium screen chart with bottom legend */}
+          <div className="lg:hidden">
+            <div className="flex justify-center mb-4">
+              <div className="relative w-64 h-48">
+                <div style={{ position: 'absolute', inset: 0 }}>
+                  <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Legend boxes - horizontal like line chart */}
+            <div className="flex flex-wrap justify-center gap-4 px-2">
+              {allLabels.map((label, index) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSegment(index)}
+                >
+                  <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[index] }} />
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-200">{label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
