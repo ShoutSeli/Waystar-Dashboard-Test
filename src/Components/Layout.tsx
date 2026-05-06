@@ -120,9 +120,19 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
                       }`}
                       title={sidebarCollapsed ? item.name : undefined}
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon
+                        className={`h-5 w-5 flex-shrink-0 ${
+                          isActive ? "text-white dark:text-white" : "text-slate-800 dark:text-slate-400"
+                        }`}
+                      />
                       {!sidebarCollapsed && (
-                        <span className="text-base font-medium text-slate-800 ml-3">{item.name}</span>
+                        <span
+                          className={`text-base font-medium ml-3 ${
+                            isActive ? "text-white dark:text-white" : "text-slate-800 dark:text-slate-400"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
                       )}
                     </Link>
                   </li>
