@@ -128,7 +128,7 @@ const EligibilityCheck: React.FC = () => {
           <table className="min-w-full">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                {["Patient ID", "Name", "Status", "Actions"].map(h => <th key={h} className={TH}>{h}</th>)}
+                {["Patient ID", "Name", "Status", "Actions"].map(h => <th key={h} className={h === "Actions" ? `${TH} translate-x-20` : TH}>{h}</th>)}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -145,8 +145,8 @@ const EligibilityCheck: React.FC = () => {
                       <td className={TD}>
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium text-slate-800 ${pillCls}`}>{label}</span>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1">
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-1 translate-x-20">
                           {/* Expand */}
                           <button title="View details" onClick={() => setExpandedRow(expandedRow === patient.id ? null : patient.id)} className={BTN_ICON}>
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedRow === patient.id ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
@@ -163,7 +163,7 @@ const EligibilityCheck: React.FC = () => {
                           {isDone
                             ? <span className="text-sm font-medium text-slate-800 ml-1">Verified</span>
                             : <button title="Check eligibility" onClick={() => sendCheck(patient.id)} disabled={isChecking}
-                                className={`ml-auto ${BTN_PRIMARY} py-1.5 text-sm font-medium text-slate-800`}>
+                                className={`translate-x-6 ml-8 ${BTN_PRIMARY} py-1.5 text-sm font-medium text-slate-800`}>
                                 {isChecking
                                   ? <><svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Checking…</>
                                   : "Check"}
