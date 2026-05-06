@@ -81,14 +81,14 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
           <div className="flex items-center justify-center h-20 px-4 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-2">
               {!sidebarCollapsed && (
-                <img src="/Images/MedSov.jpeg" alt="medsov Logo" className="h-6 w-30 -translate-x-10" />
+                <img src="/Images/MedSov.jpeg" alt="medsov Logo" className="h-6 w-30 -translate-x-8" />
               )}
             </div>
           </div>
           <div className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-2 translate-x-8"} mt-6`}>
               {!sidebarCollapsed && (
                 <>
-                  <img src="/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6" />
+                  <img src="/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 rounded-lg" />
                   <h1 className="text-lg font-medium text-slate-800 dark:text-slate-100">Waystar</h1>
                 </>
               )}
