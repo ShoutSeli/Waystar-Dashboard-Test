@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Layout from "./Layout";
 
-type Tab = "configurations";
+//type Tab = "configurations";
 
 const Settings = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("configurations");
+// const [activeTab, setActiveTab] = useState<Tab>("configurations");
 
   // Configuration form state
   const [config, setConfig] = useState({
