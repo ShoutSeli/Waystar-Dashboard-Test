@@ -21,39 +21,44 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // ─── FIX ────────────────────────────────────────────────────────────────
+  // The collapsed state was stored in plain useState(false). Every time
+  // Layout unmounts and remounts (which React Router can trigger when the
+  // parent tree uses key={location.pathname}, or when hot-reload happens),
+  // useState resets to its initial value — so the sidebar springs back open.
+  //
+  // Solution: initialise from localStorage so the value survives any remount.
+  // The chevron button writes back to localStorage on every toggle.
+  // Nav-link clicks are completely unrelated — they never touch this state.
+  // ────────────────────────────────────────────────────────────────────────
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("sidebar_collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleCollapsed = () => {
+    setSidebarCollapsed(prev => {
+      const next = !prev;
+      try { localStorage.setItem("sidebar_collapsed", String(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
   const location = useLocation();
 
-  const mountIdRef = React.useRef(Math.random());
-
-  React.useEffect(() => {
-    console.log("[Layout] mounted id:", mountIdRef.current);
-  }, []);
-
-  React.useEffect(() => {
-    console.log(
-      "[Layout] route:",
-      location.pathname,
-      "sidebarCollapsed:",
-      sidebarCollapsed,
-      "sidebarOpen:",
-      sidebarOpen
-    );
-  }, [location.pathname, sidebarCollapsed, sidebarOpen]);
-
-
-
-
-
   const navItems = [
-    { name: "Dashboard",            path: "/",                    icon: HomeIcon },
-    { name: "Eligibility Check",    path: "/eligibility",         icon: ShieldCheckIcon },
-    { name: "Claim Submission",     path: "/submission",          icon: ClipboardDocumentListIcon },
-    { name: "Billing Details",      path: "/billing",             icon: CurrencyDollarIcon },
-    { name: "Claims Monitor",       path: "/status",              icon: ChartBarIcon },
-    { name: "Rejection Review",     path: "/rejections",          icon: BellAlertIcon },
-    { name: "Payer View",           path: "/insurancepayerview",  icon: UserGroupIcon },
-    { name: "Settings",             path: "/settings",            icon: Cog6ToothIcon },
+    { name: "Dashboard",         path: "/",                   icon: HomeIcon },
+    { name: "Eligibility Check", path: "/eligibility",        icon: ShieldCheckIcon },
+    { name: "Claim Submission",  path: "/submission",         icon: ClipboardDocumentListIcon },
+    { name: "Billing Details",   path: "/billing",            icon: CurrencyDollarIcon },
+    { name: "Claims Monitor",    path: "/status",             icon: ChartBarIcon },
+    { name: "Rejection Review",  path: "/rejections",         icon: BellAlertIcon },
+    { name: "Payer View",        path: "/insurancepayerview", icon: UserGroupIcon },
+    { name: "Settings",          path: "/settings",           icon: Cog6ToothIcon },
   ];
 
   return (
@@ -70,14 +75,17 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
 
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <aside
-  className={`fixed md:fixed top-0 left-0 h-screen flex z-40 transition-transform duration-300 ${
-    sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-  }`}>
+        className={`fixed md:fixed top-0 left-0 h-screen flex z-40 transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
         {/* Slim accent strip */}
         <div className="w-1 bg-gradient-to-b from-slate-300 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex flex-col items-center" />
 
-        {/* Primary sidebar */}
+        {/* Primary sidebar panel */}
         <div className={`transition-all duration-300 ${sidebarCollapsed ? "w-20" : "w-64"} bg-slate-50 dark:bg-slate-800 shadow-base flex flex-col border-r border-slate-200 dark:border-slate-700`}>
+
+          {/* Logo row */}
           <div className="flex items-center justify-center h-20 px-4 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-2">
               {!sidebarCollapsed && (
@@ -85,32 +93,45 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
               )}
             </div>
           </div>
-          <div className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-2 translate-x-8"} mt-6`}>
-              {!sidebarCollapsed && (
-                <>
-                  <img src="/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 rounded-lg" />
-                  <h1 className="text-lg font-medium text-slate-800 dark:text-slate-100">Waystar</h1>
-                </>
-              )}
-              <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className={`${sidebarCollapsed ? "ml-0" : "ml-15"} p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors`}
-                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                {sidebarCollapsed ? (
-                  <ChevronRightIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
-                ) : (
-                  <ChevronLeftIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
-                )}
-              </button>
-            </div>
 
-          <nav className="flex-1 px-4 py-6 overflow-y-auto sidebar-nav">
+          {/* Waystar logo + collapse button */}
+          <div className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-2 translate-x-8"} mt-6`}>
+            {!sidebarCollapsed && (
+              <>
+                <img src="/Images/icon_waystar.jpg" alt="Waystar Logo" className="h-6 w-6 rounded-lg" />
+                <h1 className="text-lg font-medium text-slate-800 dark:text-slate-100">Waystar</h1>
+              </>
+            )}
+            {/* ── Only this button should collapse/expand the sidebar ── */}
+            <button
+              onClick={toggleCollapsed}
+              className={`${sidebarCollapsed ? "ml-0" : "ml-15"} p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors`}
+              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? (
+                <ChevronRightIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
+              ) : (
+                <ChevronLeftIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
+              )}
+            </button>
+          </div>
+
+          {/* Nav — scrollbar hidden until hover */}
+          <nav
+            className="flex-1 px-4 py-6 overflow-y-auto sidebar-nav"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <style>{`aside .sidebar-nav::-webkit-scrollbar { display: none; }`}</style>
             <ul className="space-y-1">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
                   <li key={item.name}>
+                    {/*
+                      Nav links are plain navigation — they do NOT call
+                      toggleCollapsed or setSidebarCollapsed in any way.
+                      Clicking a link only changes the route.
+                    */}
                     <Link
                       to={item.path}
                       className={`flex items-center ${sidebarCollapsed ? "justify-center px-2" : "px-4"} py-2.5 rounded-lg font-medium transition-all duration-200 ${
