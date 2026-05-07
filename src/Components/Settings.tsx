@@ -43,9 +43,9 @@ const Settings = () => {
 
   return (
     <Layout currentPage="Settings">
-      <div className="flex flex-col gap-6 min-h-screen bg-slate-100 dark:bg-slate-900 p-4 md:p-8">
+      <div className="flex flex-col gap-6 min-h-screen dark:bg-slate-900 p-4 md:p-8">
         {/* Main Content */}
-        <section className="flex-1 space-y-6 overflow-y-auto max-w-4xl">
+        <section className="flex-1 space-y-6 overflow-y-auto">
   
           {/* ── CONFIGURATIONS ──────────────────────────────────────── */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
