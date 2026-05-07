@@ -15,7 +15,7 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
 //const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-color-3 to-color-4 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -144,7 +144,7 @@ const BillingDetails: React.FC = () => {
                           </button>
                           {/* Download PDF */}
                           <button title="Download PDF file" onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            className="bg-slate-200 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
                           </button>
                         </div>

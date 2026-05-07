@@ -14,7 +14,7 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
 // const BTN_PRIMARY= "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-color-3 to-color-4 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -170,7 +170,7 @@ const ClaimStatusMonitor: React.FC = () => {
                           title="Approve claim"
                           onClick={() => updateStatus(c.claimId, "Approved")}
                           className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-6 h-6 bg-white border border-slate-200 rounded-md p-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         </button>
@@ -179,7 +179,7 @@ const ClaimStatusMonitor: React.FC = () => {
                           title="Reject claim"
                           onClick={() => updateStatus(c.claimId, "Rejected")}
                           className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-6 h-6 bg-white border border-slate-200 rounded-md p-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
