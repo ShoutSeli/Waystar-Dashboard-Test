@@ -21,7 +21,7 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
 const BTN_PRIMARY= "inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -46,7 +46,7 @@ const Field: React.FC<FieldProps> = ({
 }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-sm font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wide">
-      {label}{required && <span className="text-sm font-medium text-slate-800 ml-1">*</span>}
+      {label}{required && <span className="text-sm font-medium text-slate-800 ml-1 dark:text-red-500">*</span>}
     </label>
     {datalist ? (
       <>
@@ -219,7 +219,7 @@ const InsurancePayerView: React.FC = () => {
         </select>
         {/* CSV Export */}
         <button title="Export to CSV" onClick={exportCSV}
-          className="bg-slate-200 inline-flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+          className="bg-slate-200 inline-flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-800 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:hover:text-white transition">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
           CSV
         </button>
@@ -284,10 +284,10 @@ const InsurancePayerView: React.FC = () => {
                       <td colSpan={7} className="px-6 py-4">
                         <div className="grid grid-cols-3 gap-6 text-sm">
                           {[{ l:"Address", v:p.address }, { l:"Fax", v:p.fax||"—" }, { l:"Representative", v:p.representative||"—" }].map(({ l, v }) => (
-                            <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1">{l}</p><p className="text-slate-800 dark:text-slate-300">{v}</p></div>
+                            <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">{l}</p><p className="text-slate-800 dark:text-slate-300">{v}</p></div>
                           ))}
                           <div className="col-span-2">
-                            <p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1">Portal</p>
+                            <p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">Portal</p>
                             {p.portalLink
                               ? <a href={p.portalLink} target="_blank" rel="noopener noreferrer" className="font-medium text-slate-800 dark:text-slate-300 hover:underline text-sm break-all">{p.portalLink}</a>
                               : <p className="text-sm font-medium text-slate-800 dark:text-slate-400">—</p>}
@@ -361,10 +361,10 @@ const InsurancePayerView: React.FC = () => {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex-shrink-0">
               <div>
-                <h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                <h2 className="text-sm font-medium text-slate-800 dark:text-white">
                   {editingClaimId ? "Edit Insurance Record" : "Add New Insurance Record"}
                 </h2>
-                <p className="text-sm font-medium text-slate-800 mt-0.5">
+                <p className="text-sm font-medium text-slate-800 mt-0.5 dark:text-white">
                   {editingClaimId ? `Editing ${editingClaimId}` : `New record · ${formData.claimId}`}
                 </p>
               </div>
@@ -377,7 +377,7 @@ const InsurancePayerView: React.FC = () => {
             <div className="overflow-y-auto px-6 py-5 flex-1 space-y-6">
               {/* Core Information */}
               <div>
-                <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3">Core Information</p>
+                <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3 dark:text-white">Core Information</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Patient Name"      field="patientName"      required placeholder="e.g. Aurelia Koomson"    formData={formData} formErrors={formErrors} onFieldChange={handleFieldChange} />
                   <Field label="Insurance Company" field="insuranceCompany" required datalist={INSURANCE_COMPANIES}         formData={formData} formErrors={formErrors} onFieldChange={handleFieldChange} />
@@ -387,7 +387,7 @@ const InsurancePayerView: React.FC = () => {
               </div>
               {/* Contact Details */}
               <div>
-                <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3">Contact Details</p>
+                <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3 dark:text-white">Contact Details</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Phone"       field="phone"       required type="tel"   placeholder="(000) 000-0000"              formData={formData} formErrors={formErrors} onFieldChange={handleFieldChange} />
                   <Field label="Fax"         field="fax"                  type="tel"   placeholder="(000) 000-0000"              formData={formData} formErrors={formErrors} onFieldChange={handleFieldChange} />
@@ -400,7 +400,7 @@ const InsurancePayerView: React.FC = () => {
 
             {/* Modal Footer */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl flex-shrink-0">
-              <p className="text-sm font-medium text-slate-800"><span className="text-sm font-medium text-slate-800">*</span> Required</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-white"><span className="text-sm font-medium text-slate-800 dark:text-red-500">*</span> Required</p>
               <div className="flex gap-2">
                 <button onClick={closeModal} className="px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition">
                   Cancel

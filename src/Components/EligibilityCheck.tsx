@@ -10,7 +10,7 @@ const TH   = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text
 const TD   = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM  = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
 const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -161,7 +161,7 @@ const EligibilityCheck: React.FC = () => {
                           </button>
                           {/* Check / Verified */}
                           {isDone
-                            ? <span className="text-sm font-medium text-slate-800 ml-1">Verified</span>
+                            ? <span className="text-sm font-medium text-slate-800 ml-1 dark:text-white">Verified</span>
                             : <button title="Check eligibility" onClick={() => sendCheck(patient.id)} disabled={isChecking}
                                 className={`translate-x-10 ml-8 ${BTN_PRIMARY} py-1.5 text-sm font-medium text-slate-800`}>
                                 {isChecking
@@ -176,7 +176,7 @@ const EligibilityCheck: React.FC = () => {
                         <td colSpan={4} className="px-6 py-4">
                           <div className="grid grid-cols-3 gap-6 text-sm">
                             {[{ l: "Patient ID", v: patient.id }, { l: "Name", v: patient.name }, { l: "Status", v: label }].map(({ l, v }) => (
-                              <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1">{l}</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{v}</p></div>
+                              <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">{l}</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{v}</p></div>
                             ))}
                           </div>
                         </td>
@@ -242,20 +242,20 @@ const EligibilityCheck: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
               <div>
-                <h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Edit Patient</h2>
-                <p className="text-sm font-medium text-slate-800">{editingPatient.id}</p>
+                <h2 className="text-sm font-medium text-slate-800 dark:text-white">Edit Patient</h2>
+                <p className="text-sm font-medium text-slate-800 dark:text-white">{editingPatient.id}</p>
               </div>
               <button title="Close" onClick={() => setEditingPatient(null)} className={BTN_ICON}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
             <div className="px-6 py-5">
-              <label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5">Full Name</label>
+              <label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5 dark:text-white">Full Name</label>
               <input type="text" value={editName} onChange={e => setEditName(e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition" />
             </div>
             <div className="flex gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
-              <button onClick={() => setEditingPatient(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setEditingPatient(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:hover:bg-slate-800 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={saveEdit} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Save Changes</button>
             </div>
           </div>

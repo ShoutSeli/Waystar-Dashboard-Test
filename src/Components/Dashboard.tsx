@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
 
       {/* Live badge */}
       <div className="mb-6">
-        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:text-white dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
           <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
           Live · updates every 5 seconds
         </span>

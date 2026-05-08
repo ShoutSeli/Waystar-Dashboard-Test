@@ -39,7 +39,7 @@ const Settings = () => {
 
   const inputClass =
     "w-full px-3 py-2 text-sm font-medium text-slate-800 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-gray-600";
-  const labelClass = "block text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-slate-400";
+  const labelClass = "block text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white";
 
   return (
     <Layout currentPage="Settings">
@@ -52,20 +52,20 @@ const Settings = () => {
               {/* Card header */}
               <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                 <div className="bg-slate-100 dark:bg-slate-700/30 p-2 rounded-lg">
-                  <svg className="w-5 h-5 text-slate-800 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="w-5 h-5 text-slate-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Server Configuration</h2>
-                  <p className="text-sm font-medium text-slate-800">Configure your connection settings and data endpoints</p>
+                  <h2 className="text-sm font-medium text-slate-800 dark:text-white">Server Configuration</h2>
+                  <p className="text-sm font-medium text-slate-800 dark:text-white">Configure your connection settings and data endpoints</p>
                 </div>
               </div>
 
               <div className="p-6 space-y-6">
                 {/* Connection Details section */}
                 <div>
-                  <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 dark:text-white">
                     <span className="inline-block w-4 h-px bg-gray-300" />
                     Connection Details
                   </p>
@@ -120,7 +120,7 @@ const Settings = () => {
                         <button
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-800 hover:text-slate-900 dark:hover:text-gray-300 transition"
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-800 hover:text-slate-900 dark:text-white dark:hover:text-gray-300 transition"
                           title={showPassword ? "Hide password" : "Show password"}
                         >
                           {showPassword ? (
@@ -141,7 +141,7 @@ const Settings = () => {
 
                 {/* Data Endpoints section */}
                 <div>
-                  <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 dark:text-white">
                     <span className="inline-block w-4 h-px bg-gray-300" />
                     Data Endpoints
                   </p>
@@ -215,7 +215,7 @@ const Settings = () => {
                   <button
                     onClick={testConnection}
                     disabled={testStatus === "testing"}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-900 transition disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-200 dark:bg-slate-700/20 dark:border-blue-800 dark:hover:bg-slate-700/40"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-900 transition disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-200"
                   >
                     {testStatus === "testing" ? (
                       <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

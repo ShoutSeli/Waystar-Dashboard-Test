@@ -10,7 +10,7 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white transition-colors";
 const BTN_PRIMARY= "inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 const INPUT      = "w-full px-3 py-2 text-sm font-medium border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition";
 // ──────────────────────────────────────────────────────────────────────────
@@ -172,7 +172,7 @@ const ClaimSubmission: React.FC = () => {
                       <td colSpan={5} className="px-6 py-4">
                         <div className="grid grid-cols-4 gap-6 text-sm">
                           {[{ l: "Claim ID", v: claim.id }, { l: "Patient", v: claim.patient }, { l: "Amount", v: `$${claim.amount.toLocaleString()}` }, { l: "Status", v: claim.status }].map(({ l, v }) => (
-                            <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1">{l}</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{v}</p></div>
+                            <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">{l}</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{v}</p></div>
                           ))}
                         </div>
                       </td>
@@ -218,20 +218,20 @@ const ClaimSubmission: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
-              <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Review Claim</h2><p className="text-sm font-medium text-slate-800">Confirm before submitting</p></div>
+              <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Review Claim</h2><p className="text-sm font-medium text-slate-800 dark:text-white">Confirm before submitting</p></div>
               <button title="Close" onClick={() => setSelectedClaim(null)} className={BTN_ICON}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
             <div className="px-6 py-5 space-y-3">
               {[{ l: "Claim ID", v: selectedClaim.id }, { l: "Patient", v: selectedClaim.patient }, { l: "Amount", v: `$${selectedClaim.amount.toLocaleString()}` }].map(({ l, v }) => (
                 <div key={l} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
-                  <span className="text-sm font-medium text-slate-800">{l}</span>
+                  <span className="text-sm font-medium text-slate-800 dark:text-white">{l}</span>
                   <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{v}</span>
                 </div>
               ))}
-              <p className="text-sm font-medium text-slate-800 pt-2">Once submitted, this claim will be forwarded to the insurer and cannot be recalled.</p>
+              <p className="text-sm font-medium text-slate-800 pt-2 dark:text-white">Once submitted, this claim will be forwarded to the insurer and cannot be recalled.</p>
             </div>
             <div className="flex gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
-              <button onClick={() => setSelectedClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setSelectedClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={confirmSubmission} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Confirm Submit</button>
             </div>
           </div>
@@ -243,15 +243,15 @@ const ClaimSubmission: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
-              <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Edit Claim</h2><p className="text-sm font-medium text-slate-800">{editingClaim.id}</p></div>
+              <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Edit Claim</h2><p className="text-sm font-medium text-slate-800 dark:text-white">{editingClaim.id}</p></div>
               <button title="Close" onClick={() => setEditingClaim(null)} className={BTN_ICON}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
             <div className="px-6 py-5 space-y-4">
-              <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5">Patient Name</label><input type="text" value={editForm.patient} onChange={e => setEditForm(f => ({ ...f, patient: e.target.value }))} className={INPUT} /></div>
-              <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5">Bill Amount ($)</label><input type="number" value={editForm.amount} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value }))} className={INPUT} /></div>
+              <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5 dark:text-white">Patient Name</label><input type="text" value={editForm.patient} onChange={e => setEditForm(f => ({ ...f, patient: e.target.value }))} className={INPUT} /></div>
+              <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5 dark:text-white">Bill Amount ($)</label><input type="number" value={editForm.amount} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value }))} className={INPUT} /></div>
             </div>
             <div className="flex gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
-              <button onClick={() => setEditingClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setEditingClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={saveEdit} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Save Changes</button>
             </div>
           </div>
@@ -265,7 +265,7 @@ const ClaimSubmission: React.FC = () => {
             <h3 className="text-sm font-medium text-slate-800 dark:text-slate-100 mb-2">Delete Claim</h3>
             <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mb-5">Delete <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{deleteConfirmId}</span>? This cannot be undone.</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 px-4 py-2 text-sm font-medium text-white bg-slate-800 dark:bg-slate-700 rounded-lg hover:bg-slate-900 transition">Delete</button>
             </div>
           </div>

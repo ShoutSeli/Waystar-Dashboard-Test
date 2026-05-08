@@ -12,7 +12,7 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
 // ──────────────────────────────────────────────────────────────────────────
 
 const RejectionReview: React.FC = () => {
@@ -145,12 +145,12 @@ const RejectionReview: React.FC = () => {
                       <td colSpan={6} className="px-6 py-4">
                         <div className="flex items-start gap-3">
                           <div className="w-7 h-7 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-4 h-4 text-slate-800 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 text-slate-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wide mb-1">Suggested Action</p>
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wide mb-1 dark:text-white">Suggested Action</p>
                             <p className="text-sm font-medium text-slate-800 dark:text-slate-300">{r.suggestedAction}</p>
                           </div>
                         </div>

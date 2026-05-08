@@ -185,7 +185,7 @@ const ClaimStatusMonitor: React.FC = () => {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-sm text-slate-800 italic">Processed</span>
+                      <span className="text-sm text-slate-800 dark:text-white italic">Processed</span>
                     )}
                   </td>
                 </tr>
