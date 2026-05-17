@@ -1,23 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 import { useNotifications } from "../context/NotificationContext";
 
 interface Claim { id: string; patient: string; amount: number; status: string; }
 
 // ─── Shared design tokens ──────────────────────────────────────────────────
-const CARD       = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
-const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
-const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
-const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
-const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white transition-colors";
-const BTN_PRIMARY= "inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
-const INPUT      = "w-full px-3 py-2 text-sm font-medium border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition";
+const CARD  = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
+const TH    = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
+const TD    = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
+const TDM   = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
+const FOOT  = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
+const INPUT = "w-full px-3 py-2 text-sm font-medium border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition";
+
+const ROW_EVEN = { backgroundColor: "#f2f2f2" };
+const ROW_ODD  = { backgroundColor: "#5114961c" };
+
+const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white hover:border-red-700 transition-colors dark:bg-slate-800 dark:hover:bg-red-700";
+const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
+
+const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+        Actions
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+          style={{
+            animation: "dropDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+          onClick={() => setOpen(false)}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DropdownItem: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
+  <button onClick={onClick} className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700"
+    style={{
+      transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+    }}
+  >
+    {icon}{label}
+  </button>
+);
+
+const MoreDetailsIcon = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+const EditIcon        = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>;
+const DeleteIcon      = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>;
+const ReviewIcon      = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>;
 
 const ClaimSubmission: React.FC = () => {
   const { addNotification } = useNotifications();
-
   const [claims, setClaims] = useState<Claim[]>([
     { id: "C-2001", patient: "Stephen Dogbe",     amount: 1200, status: "Pending" },
     { id: "C-2002", patient: "Abigail Adjei",     amount: 850,  status: "Pending" },
@@ -96,7 +144,7 @@ const ClaimSubmission: React.FC = () => {
         </div>
       )}
 
-      {/* Summary Cards */}
+      <div className="animate-cascade">
       <div className="grid grid-cols-3 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon }) => (
           <div key={label} className={`${CARD} p-5`}>
@@ -109,7 +157,6 @@ const ClaimSubmission: React.FC = () => {
         ))}
       </div>
 
-      {/* Toolbar */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm font-medium text-slate-800 dark:text-slate-400">{pendingCount} claim{pendingCount !== 1 ? "s" : ""} awaiting submission</p>
         <button onClick={submitAll} disabled={pendingCount === 0} className={BTN_PRIMARY}>
@@ -124,47 +171,30 @@ const ClaimSubmission: React.FC = () => {
           <table className="min-w-full">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                {["Claim ID", "Patient", "Amount", "Status", "Actions"].map(h => <th key={h} className={h === "Actions" ? `${TH} translate-x-14` : TH}>{h}</th>)}
+                {["Claim ID", "Patient", "Amount", "Status", "Actions"].map(h => <th key={h} className={TH}>{h}</th>)}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-              {claims.map(claim => (
+            <tbody>
+              {claims.map((claim, idx) => (
                 <React.Fragment key={claim.id}>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr style={idx % 2 === 0 ? ROW_ODD : ROW_EVEN} className="hover:opacity-90 transition-opacity">
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{claim.id}</td>
                     <td className={TDM}>{claim.patient}</td>
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100">${claim.amount.toLocaleString()}</td>
                     <td className={TD}>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium text-slate-800
-                        ${claim.status === "Submitted"
-                          ? "text-sm font-medium text-slate-800 dark:bg-slate-200 dark:text-slate-800"
-                          : "text-sm font-medium text-slate-800 dark:bg-slate-700 dark:text-slate-300"}`}>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium text-slate-800 ${claim.status === "Submitted" ? "dark:bg-slate-200 dark:text-slate-800" : "dark:bg-slate-700 dark:text-slate-300"}`}>
                         {claim.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-1 translate-x-14">
-                        {/* Expand */}
-                        <button title="View details" onClick={() => setExpandedRow(expandedRow === claim.id ? null : claim.id)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedRow === claim.id ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
-                        </button>
-                        {/* Edit */}
-                        <button title="Edit claim" onClick={() => openEdit(claim)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                        </button>
-                        {/* Delete */}
-                        <button title="Delete claim" onClick={() => setDeleteConfirmId(claim.id)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                        {/* Review / Submitted */}
-                        {claim.status === "Pending"
-                          ? <button title="Review and submit" onClick={() => setSelectedClaim(claim)}
-                              className={`translate-x-10 ml-4 ${BTN_PRIMARY} py-1.5 text-sm`}>
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                              Review
-                            </button>
-                          : <span className="text-sm font-medium text-slate-800 ml-1">Submitted</span>}
-                      </div>
+                    <td className="px-4 py-3">
+                      <ActionsDropdown>
+                        <DropdownItem icon={MoreDetailsIcon} label="More Details" onClick={() => setExpandedRow(expandedRow === claim.id ? null : claim.id)} />
+                        <DropdownItem icon={EditIcon}        label="Edit"         onClick={() => openEdit(claim)} />
+                        <DropdownItem icon={DeleteIcon}      label="Delete"       onClick={() => setDeleteConfirmId(claim.id)} />
+                        {claim.status === "Pending" && (
+                          <DropdownItem icon={ReviewIcon} label="Review & Submit" onClick={() => setSelectedClaim(claim)} />
+                        )}
+                      </ActionsDropdown>
                     </td>
                   </tr>
                   {expandedRow === claim.id && (
@@ -202,11 +232,13 @@ const ClaimSubmission: React.FC = () => {
               {claim.status === "Pending" && (
                 <button onClick={() => setSelectedClaim(claim)} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Review &amp; Submit</button>
               )}
-              <button title="Edit claim" onClick={() => openEdit(claim)} className={BTN_ICON}>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+              <button onClick={() => openEdit(claim)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {EditIcon} Edit
               </button>
-              <button title="Delete claim" onClick={() => setDeleteConfirmId(claim.id)} className={BTN_ICON}>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              <button onClick={() => setDeleteConfirmId(claim.id)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {DeleteIcon} Delete
               </button>
             </div>
           </div>
@@ -215,11 +247,25 @@ const ClaimSubmission: React.FC = () => {
 
       {/* Review Modal */}
       {selectedClaim && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          style={{
+            animation: "fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+        >
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700"
+            style={{
+              animation: "slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+            }}
+          >
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
               <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Review Claim</h2><p className="text-sm font-medium text-slate-800 dark:text-white">Confirm before submitting</p></div>
-              <button title="Close" onClick={() => setSelectedClaim(null)} className={BTN_ICON}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              <button onClick={() => setSelectedClaim(null)} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700"
+                style={{
+                  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
             </div>
             <div className="px-6 py-5 space-y-3">
               {[{ l: "Claim ID", v: selectedClaim.id }, { l: "Patient", v: selectedClaim.patient }, { l: "Amount", v: `$${selectedClaim.amount.toLocaleString()}` }].map(({ l, v }) => (
@@ -231,7 +277,7 @@ const ClaimSubmission: React.FC = () => {
               <p className="text-sm font-medium text-slate-800 pt-2 dark:text-white">Once submitted, this claim will be forwarded to the insurer and cannot be recalled.</p>
             </div>
             <div className="flex gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
-              <button onClick={() => setSelectedClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setSelectedClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={confirmSubmission} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Confirm Submit</button>
             </div>
           </div>
@@ -240,18 +286,32 @@ const ClaimSubmission: React.FC = () => {
 
       {/* Edit Modal */}
       {editingClaim && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          style={{
+            animation: "fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+        >
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700"
+            style={{
+              animation: "slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+            }}
+          >
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
               <div><h2 className="text-sm font-medium text-slate-800 dark:text-slate-100">Edit Claim</h2><p className="text-sm font-medium text-slate-800 dark:text-white">{editingClaim.id}</p></div>
-              <button title="Close" onClick={() => setEditingClaim(null)} className={BTN_ICON}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              <button onClick={() => setEditingClaim(null)} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700"
+                style={{
+                  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
             </div>
             <div className="px-6 py-5 space-y-4">
               <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5 dark:text-white">Patient Name</label><input type="text" value={editForm.patient} onChange={e => setEditForm(f => ({ ...f, patient: e.target.value }))} className={INPUT} /></div>
               <div><label className="text-sm font-medium text-slate-800 uppercase tracking-wide block mb-1.5 dark:text-white">Bill Amount ($)</label><input type="number" value={editForm.amount} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value }))} className={INPUT} /></div>
             </div>
             <div className="flex gap-2 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
-              <button onClick={() => setEditingClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => setEditingClaim(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 transition">Cancel</button>
               <button onClick={saveEdit} className={`flex-1 ${BTN_PRIMARY} justify-center`}>Save Changes</button>
             </div>
           </div>
@@ -260,17 +320,26 @@ const ClaimSubmission: React.FC = () => {
 
       {/* Delete Confirmation */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-700">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+          style={{
+            animation: "fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+        >
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-700"
+            style={{
+              animation: "slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+            }}
+          >
             <h3 className="text-sm font-medium text-slate-800 dark:text-slate-100 mb-2">Delete Claim</h3>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mb-5">Delete <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{deleteConfirmId}</span>? This cannot be undone.</p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mb-5">Delete <span className="font-semibold dark:text-slate-200">{deleteConfirmId}</span>? This cannot be undone.</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 transition">Cancel</button>
-              <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 px-4 py-2 text-sm font-medium text-white bg-slate-800 dark:bg-slate-700 rounded-lg hover:bg-slate-900 transition">Delete</button>
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+              <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-700 transition">Delete</button>
             </div>
           </div>
         </div>
       )}
+      </div>
     </Layout>
   );
 };

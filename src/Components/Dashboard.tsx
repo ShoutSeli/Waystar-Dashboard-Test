@@ -8,9 +8,10 @@ import Layout from "./Layout";
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale);
 
-// ─── Shared design tokens (used identically across all pages) ───────────────
 const CARD = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
-// ────────────────────────────────────────────────────────────────────────────
+
+const ROW_EVEN = { backgroundColor: "#f2f2f2" };
+const ROW_ODD  = { backgroundColor: "#5114961c" };
 
 const Dashboard: React.FC = () => {
   const [claimsData, setClaimsData] = useState({ submitted: 1245, rejected: 320, approved: 925 });
@@ -29,44 +30,33 @@ const Dashboard: React.FC = () => {
 
   const toggleSegment = (index: number) => {
     const newHidden = new Set(hiddenSegments);
-    if (newHidden.has(index)) {
-      newHidden.delete(index);
-    } else {
-      newHidden.add(index);
-    }
+    if (newHidden.has(index)) newHidden.delete(index); else newHidden.add(index);
     setHiddenSegments(newHidden);
   };
 
   const approvalRate = Math.round((claimsData.approved / claimsData.submitted) * 100);
-
   const allLabels = ["Submitted", "Rejected", "Approved"];
-  const allColors = ["#8B86BF", "#5B5999", "#3D3B5B"];
+  const allColors = ["#808080", "#FF0000", "#FFA500"];
 
   const pieDataValues = [claimsData.submitted, claimsData.rejected, claimsData.approved];
   const filteredLabels = allLabels.filter((_, i) => !hiddenSegments.has(i));
-  const filteredData = pieDataValues.filter((_, i) => !hiddenSegments.has(i));
+  const filteredData   = pieDataValues.filter((_, i) => !hiddenSegments.has(i));
   const filteredColors = allColors.filter((_, i) => !hiddenSegments.has(i));
 
   const pieData = {
     labels: filteredLabels,
-    datasets: [{
-      data: filteredData,
-      backgroundColor: filteredColors,
-      borderColor: ["#fff", "#fff", "#fff"],
-      borderWidth: 3,
-    }],
+    datasets: [{ data: filteredData, backgroundColor: filteredColors, borderColor: ["#fff","#fff","#fff"], borderWidth: 1 }],
   };
 
   const lineData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: ["Jan","Feb","Mar","Apr","May","Jun"],
     datasets: [
-      { label: "Submitted", data: [500, 700, 800, 900, 1100, claimsData.submitted], borderColor: "#8B86BF", backgroundColor: "rgba(139,134,191,0.06)", fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#8B86BF" },
-      { label: "Approved",  data: [400, 600, 700, 800, 950,  claimsData.approved],  borderColor: "#5B5999", backgroundColor: "rgba(91,89,153,0.06)",    fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#5B5999" },
-      { label: "Rejected",  data: [100, 120, 150, 200, 250,  claimsData.rejected],  borderColor: "#3D3B5B", backgroundColor: "rgba(61,59,91,0.06)",     fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#3D3B5B" },
+      { label: "Submitted", data: [500,700,800,900,1100,claimsData.submitted], borderColor: "#808080", backgroundColor: "rgba(139,134,191,0.06)", fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#8B86BF" },
+      { label: "Approved",  data: [400,600,700,800,950, claimsData.approved],  borderColor: "#FFA500", backgroundColor: "rgba(91,89,153,0.06)",    fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#5B5999" },
+      { label: "Rejected",  data: [100,120,150,200,250, claimsData.rejected],  borderColor: "#FF0000", backgroundColor: "rgba(61,59,91,0.06)",     fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#3D3B5B" },
     ],
   };
 
-{/*  Line Chart styling */}
   const lineOptions = {
     responsive: true,
     plugins: { legend: { position: "bottom" as const, labels: { boxWidth: 10, padding: 14, font: { size: 14 } } } },
@@ -97,23 +87,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout currentPage="Dashboard">
+      <div className="animate-cascade">
+        <div className="mb-6">
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:text-white dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+            Live · updates every 5 seconds
+          </span>
+        </div>
 
-      {/* Live badge */}
-      <div className="mb-6">
-        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:text-white dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
-          Live · updates every 5 seconds
-        </span>
-      </div>
-
-      {/* Summary Cards — canonical sizing used on every page */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon }) => (
           <div key={label} className={`${CARD} p-5`}>
             <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-              </svg>
+              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
             </div>
             <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
             <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
@@ -121,85 +107,42 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white dark:bg-slate-800 shadow border border-slate-100 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-base font-medium text-slate-800 dark:text-slate-100">Claim Distribution</h3>
             <span className="text-base font-medium text-slate-800 dark:text-slate-400">All time</span>
           </div>
-
-          {/* Large screen chart with positioned legend */}
           <div className="hidden lg:flex justify-center">
             <div className="relative w-80 h-64">
-              <div style={{ position: 'absolute', inset: 0 }}>
+              <div style={{ position: "absolute", inset: 0 }}>
                 <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
               </div>
-
-              {/* Submitted - right side */}
-              <div
-                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
-                style={{
-                  right: '-25px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  opacity: hiddenSegments.has(0) ? 0.5 : 1,
-                }}
-                onClick={() => toggleSegment(0)}
-              >
-                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[0] }} />
-                <span className="text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">{allLabels[0]}</span>
-              </div>
-
-              {/* Rejected - bottom-left */}
-              <div
-                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
-                style={{
-                  left: '-5px',
-                  bottom: '-5px',
-                  opacity: hiddenSegments.has(1) ? 0.5 : 1,
-                }}
-                onClick={() => toggleSegment(1)}
-              >
-                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[1] }} />
-                <span className="text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">{allLabels[1]}</span>
-              </div>
-
-              {/* Approved - top-left */}
-              <div
-                className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
-                style={{
-                  left: '-5px',
-                  top: '-5px',
-                  opacity: hiddenSegments.has(2) ? 0.5 : 1,
-                }}
-                onClick={() => toggleSegment(2)}
-              >
-                <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[2] }} />
-                <span className="text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">{allLabels[2]}</span>
-              </div>
+              {[
+                { style: { right: "-25px", top: "50%", transform: "translateY(-50%)" }, idx: 0 },
+                { style: { left: "-5px", bottom: "-5px" }, idx: 1 },
+                { style: { left: "-5px", top: "-5px" }, idx: 2 },
+              ].map(({ style, idx }) => (
+                <div key={idx} className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                  style={{ ...style, opacity: hiddenSegments.has(idx) ? 0.5 : 1 }} onClick={() => toggleSegment(idx)}>
+                  <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[idx] }} />
+                  <span className="text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">{allLabels[idx]}</span>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Small and medium screen chart with bottom legend */}
           <div className="lg:hidden">
             <div className="flex justify-center mb-6">
               <div className="relative w-64 h-48">
-                <div style={{ position: 'absolute', inset: 0 }}>
+                <div style={{ position: "absolute", inset: 0 }}>
                   <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
                 </div>
               </div>
             </div>
-
-            {/* Legend boxes */}
             <div className="flex flex-wrap justify-center gap-4 px-2">
               {allLabels.map((label, index) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
-                  style={{ opacity: hiddenSegments.has(index) ? 0.5 : 1 }}
-                  onClick={() => toggleSegment(index)}
-                >
+                <div key={label} className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                  style={{ opacity: hiddenSegments.has(index) ? 0.5 : 1 }} onClick={() => toggleSegment(index)}>
                   <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[index] }} />
                   <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</span>
                 </div>
@@ -216,7 +159,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-800 shadow border border-slate-100 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
@@ -246,12 +188,12 @@ const Dashboard: React.FC = () => {
           <table className="min-w-full">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700">
-                {["Claim ID", "Reason", "Date"].map(h => <th key={h} className="px-6 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
+                {["Claim ID","Reason","Date"].map(h => <th key={h} className="px-6 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>)}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-              {recentRejections.map(r => (
-                <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+            <tbody>
+              {recentRejections.map((r, idx) => (
+                <tr key={r.id} style={idx % 2 === 0 ? ROW_ODD : ROW_EVEN} className="hover:opacity-90 transition-opacity">
                   <td className="px-6 py-3 text-sm font-medium text-slate-800 dark:text-slate-300">{r.id}</td>
                   <td className="px-6 py-3 text-sm font-medium text-slate-800 dark:text-slate-300">{r.reason}</td>
                   <td className="px-6 py-3 text-sm font-medium text-slate-800 dark:text-slate-300">{r.date}</td>
@@ -260,6 +202,7 @@ const Dashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </Layout>
   );

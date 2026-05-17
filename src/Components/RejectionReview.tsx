@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 
 interface Rejection {
@@ -12,11 +12,61 @@ const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dar
 const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
 const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
 const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
+
+// Row stripe colors from table_stripe_style
+const ROW_EVEN = { backgroundColor: "#f2f2f2" };
+const ROW_ODD  = { backgroundColor: "#5114961c" };
+
+// Actions dropdown button
+const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white hover:border-red-700 transition-colors dark:bg-slate-800 dark:hover:bg-red-700";
 // ──────────────────────────────────────────────────────────────────────────
 
+/** Dropdown menu that closes when clicking outside */
+const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+        Actions
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 z-30 mt-1 w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+          onClick={() => setOpen(false)}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/** A single item inside the dropdown */
+const DropdownItem: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
+  <button
+    onClick={onClick}
+    className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 transition-colors"
+  >
+    {icon}
+    {label}
+  </button>
+);
+
 const RejectionReview: React.FC = () => {
-  const [search, setSearch]       = useState("");
+  const [search, setSearch]         = useState("");
   const [deptFilter, setDeptFilter] = useState("All");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -59,15 +109,23 @@ const RejectionReview: React.FC = () => {
   );
 
   const summaryCards = [
-    { label: "Total Rejections", value: rejections.length, icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" },
-    { label: "Departments Affected",   value: deptCount,         icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
-    { label: "Top Reason",       value: topReason,         icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z", small: true },
+    { label: "Total Rejections",    value: rejections.length, icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" },
+    { label: "Departments Affected", value: deptCount,         icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+    { label: "Top Reason",          value: topReason,         icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z", small: true },
   ];
+
+  // Shared icon components
+  const MoreDetailsIcon = (
+    <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
 
   return (
     <Layout currentPage="Rejection Review">
 
-      {/* Summary Cards — identical sizing to Dashboard */}
+      <div className="animate-cascade">
+      {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon, small }) => (
           <div key={label} className={`${CARD} p-5`}>
@@ -106,18 +164,18 @@ const RejectionReview: React.FC = () => {
           <table className="min-w-full">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                {["Claim ID", "Patient", "Department", "Rejection Reason", "Date", "Action"].map(h => (
+                {["Claim ID", "Patient", "Department", "Rejection Reason", "Date", "Actions"].map(h => (
                   <th key={h} className={TH}>{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody>
               {filtered.length === 0 && (
                 <tr><td colSpan={6} className="px-4 py-12 text-center text-sm font-medium text-slate-800">No rejections match your current filters.</td></tr>
               )}
-              {filtered.map(r => (
+              {filtered.map((r, idx) => (
                 <React.Fragment key={r.claimId}>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr style={idx % 2 === 0 ? ROW_ODD : ROW_EVEN} className="hover:opacity-90 transition-opacity">
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{r.claimId}</td>
                     <td className={TDM}>{r.patientName}</td>
                     <td className={TD}>
@@ -128,16 +186,13 @@ const RejectionReview: React.FC = () => {
                     <td className={TD}>{r.rejectionReason}</td>
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{r.rejectionDate}</td>
                     <td className="px-4 py-3">
-                      {/* Expand to show suggested fix */}
-                      <button
-                        title={expandedRow === r.claimId ? "Hide suggested fix" : "Show suggested fix"}
-                        onClick={() => setExpandedRow(expandedRow === r.claimId ? null : r.claimId)}
-                        className={BTN_ICON}>
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d={expandedRow === r.claimId ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
-                        </svg>
-                      </button>
+                      <ActionsDropdown>
+                        <DropdownItem
+                          icon={MoreDetailsIcon}
+                          label="More Details"
+                          onClick={() => setExpandedRow(expandedRow === r.claimId ? null : r.claimId)}
+                        />
+                      </ActionsDropdown>
                     </td>
                   </tr>
                   {expandedRow === r.claimId && (
@@ -145,12 +200,12 @@ const RejectionReview: React.FC = () => {
                       <td colSpan={6} className="px-6 py-4">
                         <div className="flex items-start gap-3">
                           <div className="w-7 h-7 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-4 h-4 text-slate-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wide mb-1 dark:text-white">Suggested Action</p>
+                            <p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">Suggested Action</p>
                             <p className="text-sm font-medium text-slate-800 dark:text-slate-300">{r.suggestedAction}</p>
                           </div>
                         </div>
@@ -187,6 +242,7 @@ const RejectionReview: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </Layout>
   );

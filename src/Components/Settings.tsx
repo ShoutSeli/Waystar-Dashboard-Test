@@ -45,14 +45,14 @@ const Settings = () => {
     <Layout currentPage="Settings">
       <div className="flex flex-col gap-6 min-h-screen dark:bg-slate-900 p-4 md:p-8">
         {/* Main Content */}
-        <section className="flex-1 space-y-6 overflow-y-auto">
+        <section className="flex-1 space-y-6 overflow-y-auto animate-cascade">
   
           {/* ── CONFIGURATIONS ──────────────────────────────────────── */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
               {/* Card header */}
               <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                 <div className="bg-slate-100 dark:bg-slate-700/30 p-2 rounded-lg">
-                  <svg className="w-5 h-5 text-slate-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="w-5 h-5 text-red-500 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                   </svg>
                 </div>
@@ -120,7 +120,7 @@ const Settings = () => {
                         <button
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-800 hover:text-slate-900 dark:text-white dark:hover:text-gray-300 transition"
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 dark:text-white dark:hover:text-gray-300 transition"
                           title={showPassword ? "Hide password" : "Show password"}
                         >
                           {showPassword ? (
@@ -215,7 +215,7 @@ const Settings = () => {
                   <button
                     onClick={testConnection}
                     disabled={testStatus === "testing"}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-900 transition disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-200"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed dark:text-slate-200"
                   >
                     {testStatus === "testing" ? (
                       <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -232,7 +232,7 @@ const Settings = () => {
 
                   <button
                     onClick={saveSettings}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-900 transition shadow-sm"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-700 transition shadow-sm"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />

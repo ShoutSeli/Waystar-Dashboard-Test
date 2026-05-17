@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 
 interface PayerView {
@@ -12,26 +12,64 @@ const EMPTY_FORM: PayerView = {
   phone: "", email: "", department: "", fax: "", portalLink: "", representative: "",
 };
 
-const DEPARTMENTS       = ["Cardiology","Dermatology","Gynecology","Neurology","Oncology","Orthopedics","Pediatrics","Radiology"];
+const DEPARTMENTS         = ["Cardiology","Dermatology","Gynecology","Neurology","Oncology","Orthopedics","Pediatrics","Radiology"];
 const INSURANCE_COMPANIES = ["Aetna","BlueCross BlueShield","Cigna","Humana","UnitedHealth"];
 
 // ─── Shared design tokens ──────────────────────────────────────────────────
-const CARD       = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
-const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
-const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
-const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
-const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
-const BTN_PRIMARY= "inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
+const CARD  = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
+const TH    = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
+const TD    = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
+const TDM   = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
+const FOOT  = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
+
+const ROW_EVEN = { backgroundColor: "#f2f2f2" };
+const ROW_ODD  = { backgroundColor: "#5114961c" };
+
+const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white hover:border-red-700 transition-colors dark:bg-slate-800 dark:hover:bg-red-700";
+const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
 // ──────────────────────────────────────────────────────────────────────────
 
-// ─── Field at MODULE LEVEL — never inside the component.
-//     Defining a component inside another causes React to remount <input> on
-//     every keystroke, destroying focus after each character typed.
+const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+        Actions
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1" onClick={() => setOpen(false)}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DropdownItem: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
+  <button onClick={onClick} className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 transition-colors">
+    {icon}{label}
+  </button>
+);
+
+// ── Icon components ──
+const MoreDetailsIcon = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+const EditIcon        = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>;
+const DeleteIcon      = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>;
+const CsvIcon         = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>;
+const AddIcon         = <svg className="w-4 h-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>;
+
+// ── Field component (kept at module level to avoid remount on keystroke) ──
 const inputCls = (err?: string) =>
-  `w-full px-3 py-2 text-sm border rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100
-   focus:bg-white dark:focus:bg-slate-600 focus:outline-none focus:ring-2 transition
-   ${err ? "border-red-400 focus:ring-red-300" : "border-slate-200 dark:border-slate-600 focus:ring-slate-300 dark:focus:ring-slate-500"}`;
+  `w-full px-3 py-2 text-sm border rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-600 focus:outline-none focus:ring-2 transition ${err ? "border-red-400 focus:ring-red-300" : "border-slate-200 dark:border-slate-600 focus:ring-slate-300 dark:focus:ring-slate-500"}`;
 
 interface FieldProps {
   label: string; field: keyof PayerView; required?: boolean;
@@ -40,71 +78,57 @@ interface FieldProps {
   onFieldChange: (field: keyof PayerView, value: string) => void;
 }
 
-const Field: React.FC<FieldProps> = ({
-  label, field, required, type = "text", datalist, placeholder,
-  formData, formErrors, onFieldChange,
-}) => (
+const Field: React.FC<FieldProps> = ({ label, field, required, type = "text", datalist, placeholder, formData, formErrors, onFieldChange }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-sm font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wide">
-      {label}{required && <span className="text-sm font-medium text-slate-800 ml-1 dark:text-red-500">*</span>}
+      {label}{required && <span className="ml-1 dark:text-red-500">*</span>}
     </label>
     {datalist ? (
       <>
-        <input
-          list={`dl-${field}`}
-          value={(formData[field] as string) || ""}
-          onChange={e => onFieldChange(field, e.target.value)}
-          placeholder={placeholder || `Select or type ${label.toLowerCase()}`}
-          className={inputCls(formErrors[field])}
-        />
+        <input list={`dl-${field}`} value={(formData[field] as string) || ""} onChange={e => onFieldChange(field, e.target.value)}
+          placeholder={placeholder || `Select or type ${label.toLowerCase()}`} className={inputCls(formErrors[field])} />
         <datalist id={`dl-${field}`}>{datalist.map(v => <option key={v} value={v} />)}</datalist>
       </>
     ) : (
-      <input
-        type={type}
-        value={(formData[field] as string) || ""}
-        onChange={e => onFieldChange(field, e.target.value)}
-        placeholder={placeholder}
-        className={inputCls(formErrors[field])}
-      />
+      <input type={type} value={(formData[field] as string) || ""} onChange={e => onFieldChange(field, e.target.value)}
+        placeholder={placeholder} className={inputCls(formErrors[field])} />
     )}
-    {formErrors[field] && <p className="text-sm font-medium text-slate-800 mt-0.5">{formErrors[field]}</p>}
+    {formErrors[field] && <p className="text-sm text-red-500 mt-0.5">{formErrors[field]}</p>}
   </div>
 );
-// ─────────────────────────────────────────────────────────────────────────
 
 const InsurancePayerView: React.FC = () => {
-  const [search, setSearch]               = useState("");
-  const [expandedRow, setExpandedRow]     = useState<string | null>(null);
+  const [search, setSearch]                     = useState("");
+  const [expandedRow, setExpandedRow]           = useState<string | null>(null);
   const [departmentFilter, setDepartmentFilter] = useState("All");
-  const [showModal, setShowModal]         = useState(false);
-  const [editingClaimId, setEditingClaimId] = useState<string | null>(null);
-  const [formData, setFormData]           = useState<PayerView>(EMPTY_FORM);
-  const [formErrors, setFormErrors]       = useState<Partial<Record<keyof PayerView, string>>>({});
-  const [successBanner, setSuccessBanner] = useState<string | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [showModal, setShowModal]               = useState(false);
+  const [editingClaimId, setEditingClaimId]     = useState<string | null>(null);
+  const [formData, setFormData]                 = useState<PayerView>(EMPTY_FORM);
+  const [formErrors, setFormErrors]             = useState<Partial<Record<keyof PayerView, string>>>({});
+  const [successBanner, setSuccessBanner]       = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId]   = useState<string | null>(null);
 
   const [payers, setPayers] = useState<PayerView[]>([
-    { claimId:"C-8001", patientName:"Aurelia Koomson",  insuranceCompany:"BlueCross BlueShield", address:"123 Health Ave, Chicago, IL 60601",       phone:"(312) 555-1234", email:"support@bluecross.com",          department:"Cardiology",  fax:"(312) 555-4321", portalLink:"https://bluecross.com/claims",          representative:"John Smith"     },
-    { claimId:"C-8002", patientName:"Kwabena Owusu",    insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",               department:"Orthopedics", fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",              representative:"Mary Johnson"   },
-    { claimId:"C-8003", patientName:"Zainab Alhassan",  insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com",   department:"Neurology",   fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims",   representative:"David Brown"    },
-    { claimId:"C-8004", patientName:"Kojo Mensah",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",               department:"Pediatrics",  fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",              representative:"Sarah Davis"    },
-    { claimId:"C-8005", patientName:"Ama Boateng",      insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",             department:"Oncology",    fax:"(502) 555-7531", portalLink:"https://humana.com/claims",             representative:"Michael Wilson" },
-    { claimId:"C-8006", patientName:"Yaw Darko",        insuranceCompany:"BlueCross BlueShield", address:"987 Insurance Ave, Boston, MA 02109",      phone:"(617) 555-3579", email:"support@bluecross.com",          department:"Dermatology", fax:"(617) 555-9753", portalLink:"https://bluecross.com/claims",          representative:"Jennifer Lee"   },
-    { claimId:"C-8007", patientName:"Efua Sackey",      insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",               department:"Gynecology",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",              representative:"Mary Johnson"   },
-    { claimId:"C-8008", patientName:"Kwesi Adjei",      insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com",   department:"Cardiology",  fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims",   representative:"David Brown"    },
-    { claimId:"C-8009", patientName:"Akua Nkrumah",     insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",               department:"Radiology",   fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",              representative:"Sarah Davis"    },
-    { claimId:"C-8010", patientName:"Selorm Tetteh",    insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",             department:"Orthopedics", fax:"(502) 555-7531", portalLink:"https://humana.com/claims",             representative:"Michael Wilson" },
-    { claimId:"C-8011", patientName:"Kofi Asante",      insuranceCompany:"BlueCross BlueShield", address:"123 Health Ave, Chicago, IL 60601",        phone:"(312) 555-1234", email:"support@bluecross.com",          department:"Neurology",   fax:"(312) 555-4321", portalLink:"https://bluecross.com/claims",          representative:"John Smith"     },
-    { claimId:"C-8012", patientName:"Esi Frimpong",     insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",               department:"Pediatrics",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",              representative:"Mary Johnson"   },
-    { claimId:"C-8013", patientName:"Nana Osei",        insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com",   department:"Oncology",    fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims",   representative:"David Brown"    },
-    { claimId:"C-8014", patientName:"Abena Owusu",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",               department:"Cardiology",  fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",              representative:"Sarah Davis"    },
-    { claimId:"C-8015", patientName:"Kwamina Poku",     insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",             department:"Dermatology", fax:"(502) 555-7531", portalLink:"https://humana.com/claims",             representative:"Michael Wilson" },
-    { claimId:"C-8016", patientName:"Ama Mensah",       insuranceCompany:"BlueCross BlueShield", address:"987 Insurance Ave, Boston, MA 02109",      phone:"(617) 555-3579", email:"support@bluecross.com",          department:"Radiology",   fax:"(617) 555-9753", portalLink:"https://bluecross.com/claims",          representative:"Jennifer Lee"   },
-    { claimId:"C-8017", patientName:"Yoofi Adjei",      insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",               department:"Gynecology",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",              representative:"Mary Johnson"   },
-    { claimId:"C-8018", patientName:"Akosua Boateng",   insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com",   department:"Orthopedics", fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims",   representative:"David Brown"    },
-    { claimId:"C-8019", patientName:"Kwasi Oduor",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",               department:"Neurology",   fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",              representative:"Sarah Davis"    },
-    { claimId:"C-8020", patientName:"Nadia Hassan",     insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",             department:"Pediatrics",  fax:"(502) 555-7531", portalLink:"https://humana.com/claims",             representative:"Michael Wilson" },
+    { claimId:"C-8001", patientName:"Aurelia Koomson",  insuranceCompany:"BlueCross BlueShield", address:"123 Health Ave, Chicago, IL 60601",       phone:"(312) 555-1234", email:"support@bluecross.com",        department:"Cardiology",  fax:"(312) 555-4321", portalLink:"https://bluecross.com/claims",        representative:"John Smith"     },
+    { claimId:"C-8002", patientName:"Kwabena Owusu",    insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",             department:"Orthopedics", fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",            representative:"Mary Johnson"   },
+    { claimId:"C-8003", patientName:"Zainab Alhassan",  insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com", department:"Neurology",   fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims", representative:"David Brown"    },
+    { claimId:"C-8004", patientName:"Kojo Mensah",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",             department:"Pediatrics",  fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",            representative:"Sarah Davis"    },
+    { claimId:"C-8005", patientName:"Ama Boateng",      insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",           department:"Oncology",    fax:"(502) 555-7531", portalLink:"https://humana.com/claims",           representative:"Michael Wilson" },
+    { claimId:"C-8006", patientName:"Yaw Darko",        insuranceCompany:"BlueCross BlueShield", address:"987 Insurance Ave, Boston, MA 02109",      phone:"(617) 555-3579", email:"support@bluecross.com",        department:"Dermatology", fax:"(617) 555-9753", portalLink:"https://bluecross.com/claims",        representative:"Jennifer Lee"   },
+    { claimId:"C-8007", patientName:"Efua Sackey",      insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",             department:"Gynecology",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",            representative:"Mary Johnson"   },
+    { claimId:"C-8008", patientName:"Kwesi Adjei",      insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com", department:"Cardiology",  fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims", representative:"David Brown"    },
+    { claimId:"C-8009", patientName:"Akua Nkrumah",     insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",             department:"Radiology",   fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",            representative:"Sarah Davis"    },
+    { claimId:"C-8010", patientName:"Selorm Tetteh",    insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",           department:"Orthopedics", fax:"(502) 555-7531", portalLink:"https://humana.com/claims",           representative:"Michael Wilson" },
+    { claimId:"C-8011", patientName:"Kofi Asante",      insuranceCompany:"BlueCross BlueShield", address:"123 Health Ave, Chicago, IL 60601",        phone:"(312) 555-1234", email:"support@bluecross.com",        department:"Neurology",   fax:"(312) 555-4321", portalLink:"https://bluecross.com/claims",        representative:"John Smith"     },
+    { claimId:"C-8012", patientName:"Esi Frimpong",     insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",             department:"Pediatrics",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",            representative:"Mary Johnson"   },
+    { claimId:"C-8013", patientName:"Nana Osei",        insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com", department:"Oncology",    fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims", representative:"David Brown"    },
+    { claimId:"C-8014", patientName:"Abena Owusu",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",             department:"Cardiology",  fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",            representative:"Sarah Davis"    },
+    { claimId:"C-8015", patientName:"Kwamina Poku",     insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",           department:"Dermatology", fax:"(502) 555-7531", portalLink:"https://humana.com/claims",           representative:"Michael Wilson" },
+    { claimId:"C-8016", patientName:"Ama Mensah",       insuranceCompany:"BlueCross BlueShield", address:"987 Insurance Ave, Boston, MA 02109",      phone:"(617) 555-3579", email:"support@bluecross.com",        department:"Radiology",   fax:"(617) 555-9753", portalLink:"https://bluecross.com/claims",        representative:"Jennifer Lee"   },
+    { claimId:"C-8017", patientName:"Yoofi Adjei",      insuranceCompany:"Aetna",                address:"456 Wellness Blvd, Hartford, CT 06103",    phone:"(860) 555-5678", email:"claims@aetna.com",             department:"Gynecology",  fax:"(860) 555-8765", portalLink:"https://aetna.com/claims",            representative:"Mary Johnson"   },
+    { claimId:"C-8018", patientName:"Akosua Boateng",   insuranceCompany:"UnitedHealth",         address:"789 Care Lane, Minnetonka, MN 55345",      phone:"(952) 555-9876", email:"support@unitedhealthcare.com", department:"Orthopedics", fax:"(952) 555-6789", portalLink:"https://unitedhealthcare.com/claims", representative:"David Brown"    },
+    { claimId:"C-8019", patientName:"Kwasi Oduor",      insuranceCompany:"Cigna",                address:"321 Medical Dr, Philadelphia, PA 19103",   phone:"(215) 555-2468", email:"claims@cigna.com",             department:"Neurology",   fax:"(215) 555-8642", portalLink:"https://cigna.com/claims",            representative:"Sarah Davis"    },
+    { claimId:"C-8020", patientName:"Nadia Hassan",     insuranceCompany:"Humana",               address:"654 Health Plaza, Louisville, KY 40202",   phone:"(502) 555-1357", email:"support@humana.com",           department:"Pediatrics",  fax:"(502) 555-7531", portalLink:"https://humana.com/claims",           representative:"Michael Wilson" },
   ]);
 
   const showSuccess = (msg: string) => { setSuccessBanner(msg); setTimeout(() => setSuccessBanner(null), 3500); };
@@ -156,6 +180,13 @@ const InsurancePayerView: React.FC = () => {
     if (formErrors[field]) setFormErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
+  const exportCSV = () => {
+    const headers = ["Claim ID","Patient","Insurance Company","Address","Phone","Email","Department","Fax","Portal Link","Representative"];
+    const rows    = filteredPayers.map(p => [p.claimId,p.patientName,p.insuranceCompany,p.address,p.phone,p.email,p.department,p.fax||"",p.portalLink||"",p.representative||""]);
+    const csv     = "data:text/csv;charset=utf-8," + [headers,...rows].map(r => r.join(",")).join("\n");
+    const a = document.createElement("a"); a.href = encodeURI(csv); a.download = "insurance_payer_view.csv"; a.click();
+  };
+
   const filteredPayers = payers.filter(p =>
     (departmentFilter === "All" || p.department === departmentFilter) &&
     (p.patientName.toLowerCase().includes(search.toLowerCase()) ||
@@ -166,13 +197,6 @@ const InsurancePayerView: React.FC = () => {
   const uniqueInsurers = new Set(payers.map(p => p.insuranceCompany)).size;
   const totalPatients  = new Set(payers.map(p => p.patientName)).size;
   const departments    = ["All", ...new Set(payers.map(p => p.department))];
-
-  const exportCSV = () => {
-    const headers = ["Claim ID","Patient","Insurance Company","Address","Phone","Email","Department","Fax","Portal Link","Representative"];
-    const rows    = filteredPayers.map(p => [p.claimId,p.patientName,p.insuranceCompany,p.address,p.phone,p.email,p.department,p.fax||"",p.portalLink||"",p.representative||""]);
-    const csv     = "data:text/csv;charset=utf-8," + [headers,...rows].map(r => r.join(",")).join("\n");
-    const a = document.createElement("a"); a.href = encodeURI(csv); a.download = "insurance_payer_view.csv"; a.click();
-  };
 
   const summaryCards = [
     { label: "Total Claims",    value: totalClaims,    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
@@ -189,14 +213,13 @@ const InsurancePayerView: React.FC = () => {
         </div>
       )}
 
-      {/* Summary Cards — identical sizing to Dashboard */}
+      <div className="animate-cascade">
+      {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon }) => (
           <div key={label} className={`${CARD} p-5`}>
             <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-800 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-              </svg>
+              <svg className="w-5 h-5 text-slate-800 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
             </div>
             <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
             <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
@@ -207,9 +230,7 @@ const InsurancePayerView: React.FC = () => {
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 max-w-sm">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <input type="text" placeholder="Search patient or insurer…" value={search} onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 dark:placeholder-slate-500" />
         </div>
@@ -217,16 +238,12 @@ const InsurancePayerView: React.FC = () => {
           className="px-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-medium focus:outline-none bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
           {departments.map(d => <option key={d} value={d}>{d}</option>)}
         </select>
-        {/* CSV Export */}
-        <button title="Export to CSV" onClick={exportCSV}
-          className="bg-slate-200 inline-flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-800 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:hover:text-white transition">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-          CSV
+        <button onClick={exportCSV}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+          {CsvIcon} CSV
         </button>
-        {/* Add record */}
-        <button title="Add insurance record" onClick={openAddModal} className={BTN_PRIMARY + " lg:ml-auto"}>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          Add Record
+        <button onClick={openAddModal} className={BTN_PRIMARY + " lg:ml-auto"}>
+          {AddIcon} Add Record
         </button>
       </div>
 
@@ -241,42 +258,29 @@ const InsurancePayerView: React.FC = () => {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody>
               {filteredPayers.length === 0 && (
                 <tr><td colSpan={7} className="px-4 py-12 text-center text-sm font-medium text-slate-800">No records found.</td></tr>
               )}
-              {filteredPayers.map(p => (
+              {filteredPayers.map((p, idx) => (
                 <React.Fragment key={p.claimId}>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr style={idx % 2 === 0 ? ROW_ODD : ROW_EVEN} className="hover:opacity-90 transition-opacity">
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{p.claimId}</td>
                     <td className={TDM}>{p.patientName}</td>
                     <td className={TD}>{p.insuranceCompany}</td>
                     <td className={TD}>
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium dark:bg-slate-700 text-slate-800 dark:text-slate-300">
-                        {p.department}
-                      </span>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium dark:bg-slate-700 text-slate-800 dark:text-slate-300">{p.department}</span>
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-400 tabular-nums">{p.phone}</td>
                     <td className={TD}>
-                      <a href={`mailto:${p.email}`} className="font-medium text-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:underline text-sm">
-                        {p.email}
-                      </a>
+                      <a href={`mailto:${p.email}`} className="font-medium text-slate-800 dark:text-slate-300 hover:underline text-sm">{p.email}</a>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
-                        {/* Expand */}
-                        <button title="View details" onClick={() => setExpandedRow(expandedRow === p.claimId ? null : p.claimId)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedRow === p.claimId ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
-                        </button>
-                        {/* Edit */}
-                        <button title="Edit record" onClick={() => openEditModal(p)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                        </button>
-                        {/* Delete */}
-                        <button title="Delete record" onClick={() => setDeleteConfirmId(p.claimId)} className={BTN_ICON}>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                      </div>
+                      <ActionsDropdown>
+                        <DropdownItem icon={MoreDetailsIcon} label="More Details" onClick={() => setExpandedRow(expandedRow === p.claimId ? null : p.claimId)} />
+                        <DropdownItem icon={EditIcon}        label="Edit"         onClick={() => openEditModal(p)} />
+                        <DropdownItem icon={DeleteIcon}      label="Delete"       onClick={() => setDeleteConfirmId(p.claimId)} />
+                      </ActionsDropdown>
                     </td>
                   </tr>
                   {expandedRow === p.claimId && (
@@ -306,9 +310,7 @@ const InsurancePayerView: React.FC = () => {
 
       {/* Mobile Cards */}
       <div className="sm:hidden space-y-3">
-        {filteredPayers.length === 0 && (
-          <div className={`${CARD} p-8 text-center text-sm font-medium text-slate-800`}>No records found.</div>
-        )}
+        {filteredPayers.length === 0 && <div className={`${CARD} p-8 text-center text-sm font-medium text-slate-800`}>No records found.</div>}
         {filteredPayers.map(p => (
           <div key={p.claimId} className={`${CARD} p-4 space-y-3`}>
             <div className="flex items-center justify-between gap-2">
@@ -324,13 +326,13 @@ const InsurancePayerView: React.FC = () => {
               <div><p className="text-slate-800 font-medium mb-0.5">Email</p><a href={`mailto:${p.email}`} className="text-slate-800 dark:text-slate-300 hover:underline break-all">{p.email}</a></div>
             </div>
             <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
-              <button title="Edit record" onClick={() => openEditModal(p)} className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                Edit
+              <button onClick={() => openEditModal(p)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {EditIcon} Edit
               </button>
-              <button title="Delete record" onClick={() => setDeleteConfirmId(p.claimId)} className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-500 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                Delete
+              <button onClick={() => setDeleteConfirmId(p.claimId)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {DeleteIcon} Delete
               </button>
             </div>
           </div>
@@ -342,12 +344,10 @@ const InsurancePayerView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-700">
             <h3 className="text-sm font-medium text-slate-800 dark:text-slate-100 mb-2">Delete Record</h3>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mb-5">
-              Delete <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{deleteConfirmId}</span>? This cannot be undone.
-            </p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mb-5">Delete <span className="font-semibold dark:text-slate-200">{deleteConfirmId}</span>? This cannot be undone.</p>
             <div className="flex gap-2">
               <button onClick={() => setDeleteConfirmId(null)} className="flex-1 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">Cancel</button>
-              <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 px-4 py-2 text-sm font-medium text-white bg-slate-800 dark:bg-slate-700 rounded-lg hover:bg-slate-900 transition">Delete</button>
+              <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-700 transition">Delete</button>
             </div>
           </div>
         </div>
@@ -357,25 +357,16 @@ const InsurancePayerView: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-700">
-
-            {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex-shrink-0">
               <div>
-                <h2 className="text-sm font-medium text-slate-800 dark:text-white">
-                  {editingClaimId ? "Edit Insurance Record" : "Add New Insurance Record"}
-                </h2>
-                <p className="text-sm font-medium text-slate-800 mt-0.5 dark:text-white">
-                  {editingClaimId ? `Editing ${editingClaimId}` : `New record · ${formData.claimId}`}
-                </p>
+                <h2 className="text-sm font-medium text-slate-800 dark:text-white">{editingClaimId ? "Edit Insurance Record" : "Add New Insurance Record"}</h2>
+                <p className="text-sm font-medium text-slate-800 mt-0.5 dark:text-white">{editingClaimId ? `Editing ${editingClaimId}` : `New record · ${formData.claimId}`}</p>
               </div>
-              <button title="Close" onClick={closeModal} className={BTN_ICON}>
+              <button onClick={closeModal} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
-
-            {/* Modal Body */}
             <div className="overflow-y-auto px-6 py-5 flex-1 space-y-6">
-              {/* Core Information */}
               <div>
                 <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3 dark:text-white">Core Information</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -385,7 +376,6 @@ const InsurancePayerView: React.FC = () => {
                   <Field label="Representative"    field="representative"            placeholder="e.g. John Smith"           formData={formData} formErrors={formErrors} onFieldChange={handleFieldChange} />
                 </div>
               </div>
-              {/* Contact Details */}
               <div>
                 <p className="text-sm font-medium text-slate-800 uppercase tracking-widest mb-3 dark:text-white">Contact Details</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -397,14 +387,10 @@ const InsurancePayerView: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Modal Footer */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-b-2xl flex-shrink-0">
-              <p className="text-sm font-medium text-slate-800 dark:text-white"><span className="text-sm font-medium text-slate-800 dark:text-red-500">*</span> Required</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-white"><span className="dark:text-red-500">*</span> Required</p>
               <div className="flex gap-2">
-                <button onClick={closeModal} className="px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition">
-                  Cancel
-                </button>
+                <button onClick={closeModal} className="px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition">Cancel</button>
                 <button onClick={handleSave} className={BTN_PRIMARY}>
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   {editingClaimId ? "Save Changes" : "Add Record"}
@@ -414,6 +400,7 @@ const InsurancePayerView: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </Layout>
   );
 };

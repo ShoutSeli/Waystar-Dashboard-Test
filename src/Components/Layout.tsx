@@ -70,20 +70,30 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
           className="fixed inset-0 bg-black/40 z-30 md:hidden sm:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
+          style={{
+            animation: "fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
         />
       )}
 
-      {/* ── Sidebar ─────────────────────────────────────────────────────── */}
+      {/* Sidebar */}
       <aside
-        className={`fixed md:fixed top-0 left-0 h-screen flex z-40 transition-transform duration-300 ${
+        className={`fixed md:fixed top-0 left-0 h-screen flex z-40 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
+        style={{
+          transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
       >
         {/* Slim accent strip */}
         <div className="w-1 bg-gradient-to-b from-slate-300 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex flex-col items-center" />
 
         {/* Primary sidebar panel */}
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? "w-20" : "w-64"} bg-slate-50 dark:bg-slate-800 shadow-base flex flex-col border-r border-slate-200 dark:border-slate-700`}>
+        <div className={`${sidebarCollapsed ? "w-20" : "w-64"} bg-slate-50 dark:bg-slate-800 shadow-base flex flex-col border-r border-slate-200 dark:border-slate-700`}
+          style={{
+            transition: "width 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
 
           {/* Logo row */}
           <div className="flex items-center justify-center h-20 px-4 border-b border-slate-200 dark:border-slate-700">
@@ -105,13 +115,16 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
             {/* ── Only this button should collapse/expand the sidebar ── */}
             <button
               onClick={toggleCollapsed}
-              className={`${sidebarCollapsed ? "ml-0" : "ml-15"} p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors`}
+              className={`${sidebarCollapsed ? "ml-0" : "ml-15"} p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg`}
+              style={{
+                transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
               aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {sidebarCollapsed ? (
-                <ChevronRightIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
+                <ChevronRightIcon className="h-5 w-5 text-red-500 dark:text-slate-300" />
               ) : (
-                <ChevronLeftIcon className="h-5 w-5 text-slate-800 dark:text-slate-300" />
+                <ChevronLeftIcon className="h-5 w-5 text-red-500 dark:text-slate-300" />
               )}
             </button>
           </div>
@@ -134,16 +147,19 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
                     */}
                     <Link
                       to={item.path}
-                      className={`flex items-center ${sidebarCollapsed ? "justify-center px-2" : "px-4"} py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                      className={`flex items-center ${sidebarCollapsed ? "justify-center px-2" : "px-4"} py-2.5 rounded-lg font-medium ${
                         isActive
                           ? "bg-red-500 dark:bg-red-700 text-white dark:text-white shadow-sm font-bold"
                           : "text-base font-medium text-slate-800 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50"
                       }`}
+                      style={{
+                        transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                      }}
                       title={sidebarCollapsed ? item.name : undefined}
                     >
                       <item.icon
                         className={`h-5 w-5 flex-shrink-0 ${
-                          isActive ? "text-white dark:text-white" : "text-slate-800 dark:text-slate-400"
+                          isActive ? "text-white dark:text-white" : "text-red-500 dark:text-slate-400"
                         }`}
                       />
                       {!sidebarCollapsed && (
@@ -165,15 +181,26 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <div className={`flex-1 flex flex-col bg-white dark:bg-slate-900 transition-all duration-300 ${sidebarCollapsed ? "md:ml-20" : "md:ml-64"}`}>
+      <div className={`flex-1 flex flex-col bg-white dark:bg-slate-900 ${sidebarCollapsed ? "md:ml-20" : "md:ml-64"}`}
+        style={{
+          transition: "margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
 
         {/* Header */}
-        <header className="flex items-center justify-between bg-white dark:bg-slate-800 shadow-sm px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <header className="flex items-center justify-between bg-white dark:bg-slate-800 shadow-sm px-6 py-4 border-b border-slate-200 dark:border-slate-700"
+          style={{
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        >
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+            className="md:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Toggle sidebar"
+            style={{
+              transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
           >
             <svg className="h-6 w-6 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -201,7 +228,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900">
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900"
+          style={{
+            animation: "slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+        >
           {children}
         </main>
 

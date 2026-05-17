@@ -4,6 +4,9 @@
   --color-primary: #8B86BF;
   --color-secondary: #3D3B5B;
   --font-family-nohemi: 'Nohemi', sans-serif;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-exit: cubic-bezier(0.8, 0, 1, 1);
 }
 
 @font-face {
@@ -14,7 +17,71 @@
 }
 
 * {
-  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: color 0.3s var(--ease-smooth), background-color 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@keyframes dropDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 body {
@@ -22,13 +89,32 @@ body {
   @apply bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-100;
 }
 
+main {
+  animation: slideInUp 0.6s var(--ease-smooth) forwards;
+}
+
+/* Staggered animation for cascading child elements */
+.animate-cascade > * {
+  animation: slideInUp 0.6s var(--ease-smooth) both;
+}
+
+.animate-cascade > :nth-child(1) { animation-delay: 0ms; }
+.animate-cascade > :nth-child(2) { animation-delay: 60ms; }
+.animate-cascade > :nth-child(3) { animation-delay: 120ms; }
+.animate-cascade > :nth-child(4) { animation-delay: 180ms; }
+.animate-cascade > :nth-child(5) { animation-delay: 240ms; }
+.animate-cascade > :nth-child(n+6) { animation-delay: 300ms; }
+
 /* Professional card styling */
 .card {
   @apply bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-none border border-slate-100 dark:border-slate-700;
+  animation: slideInUp 0.6s var(--ease-smooth) forwards;
+  transition: all 0.3s var(--ease-smooth);
 }
 
 .card:hover {
   @apply shadow-lg;
+  transform: translateY(-2px);
 }
 
 /* Status badges */
@@ -44,10 +130,11 @@ body {
 
 /* Base button styles */
 .btn {
-  @apply inline-flex items-center justify-center gap-1.5 rounded-lg transition-all duration-200 font-medium cursor-pointer;
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg font-medium cursor-pointer;
   @apply disabled:opacity-50 disabled:cursor-not-allowed;
   @apply focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-300 dark:focus:ring-offset-slate-900 dark:focus:ring-slate-500;
   @apply whitespace-nowrap;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Button sizes */
@@ -81,12 +168,21 @@ body {
   @apply disabled:bg-slate-300 dark:disabled:bg-slate-600;
 }
 
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* Button variants - Secondary */
 .btn-secondary {
   @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200;
   @apply hover:bg-slate-50 dark:hover:bg-slate-700;
   @apply active:bg-slate-100 dark:active:bg-slate-700;
   @apply disabled:bg-slate-50 dark:disabled:bg-slate-800;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
 }
 
 /* Button variants - Danger */
@@ -97,12 +193,22 @@ body {
   @apply disabled:bg-red-300 dark:disabled:bg-red-700;
 }
 
+.btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
 /* Button variants - Success */
 .btn-success {
   @apply bg-emerald-600 dark:bg-emerald-700 text-white;
   @apply hover:bg-emerald-700 dark:hover:bg-emerald-600;
   @apply active:bg-emerald-800 dark:active:bg-emerald-800;
   @apply disabled:bg-emerald-300 dark:disabled:bg-emerald-700;
+}
+
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
 }
 
 /* Button variants - Outline Success */
@@ -157,7 +263,8 @@ body {
 }
 
 .table-base tbody tr {
-  @apply hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors;
+  @apply hover:bg-slate-50 dark:hover:bg-slate-700/50;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .table-base td {
@@ -210,8 +317,15 @@ table:not(.unstyled-table) td {
 /* ===== SUMMARY CARD SYSTEM ===== */
 
 .summary-card {
-  @apply bg-white dark:bg-slate-800 shadow-sm hover:shadow-md border border-slate-100 dark:border-slate-700 rounded-lg p-4 transition-shadow duration-300;
+  @apply bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 rounded-lg p-4;
   @apply min-h-28 flex flex-col justify-between;
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.summary-card:hover {
+  @apply shadow-md;
+  transform: translateY(-4px);
 }
 
 .summary-card-icon {

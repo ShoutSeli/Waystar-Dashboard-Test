@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 import { downloadClaimEDI, downloadClaimPDF } from "../utils/downloadClaim";
 
@@ -10,19 +10,66 @@ interface BillingDetail {
 }
 
 // ─── Shared design tokens ──────────────────────────────────────────────────
-const CARD       = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
-const TH         = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
-const TD         = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
-const TDM        = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
-const FOOT       = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
-const BTN_ICON   = "inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors";
-//const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-color-3 to-color-4 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed";
+const CARD  = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200";
+const TH    = "px-4 py-3 text-left text-base font-medium text-slate-800 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap";
+const TD    = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-300";
+const TDM   = "px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100";
+const FOOT  = "px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-400 dark:text-slate-500";
+
+const ROW_EVEN = { backgroundColor: "#f2f2f2" };
+const ROW_ODD  = { backgroundColor: "#5114961c" };
+
+const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white hover:border-red-700 transition-colors dark:bg-slate-800 dark:hover:bg-red-700";
 // ──────────────────────────────────────────────────────────────────────────
 
+const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+        Actions
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+          style={{
+            animation: "dropDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+          }}
+          onClick={() => setOpen(false)}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DropdownItem: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
+  <button onClick={onClick} className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700"
+    style={{
+      transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+    }}
+  >
+    {icon}{label}
+  </button>
+);
+
+const MoreDetailsIcon = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+const EdiIcon         = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>;
+const PdfIcon         = <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>;
+
 const BillingDetails: React.FC = () => {
-  const [search, setSearch]               = useState("");
-  const [statusFilter, setStatusFilter]   = useState("All");
-  const [expandedRow, setExpandedRow]     = useState<string | null>(null);
+  const [search, setSearch]             = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [expandedRow, setExpandedRow]   = useState<string | null>(null);
 
   const [details] = useState<BillingDetail[]>([
     { claimId:"C-5001", patientName:"Aurelia Koomson", encounterId:"E-701", serviceDate:"2026-03-15", amount:1200, status:"Pending",   insurance:"BlueCross",    department:"Cardiology",   paymentMethod:"Credit Card",         transactionId:"TXN-987654", payer:"BlueCross Insurance",    coveragePercent:80, notes:"Awaiting insurance verification" },
@@ -56,8 +103,7 @@ const BillingDetails: React.FC = () => {
 
   return (
     <Layout currentPage="Billing Details">
-
-      {/* Summary Cards */}
+      <div className="animate-cascade">
       <div className="grid grid-cols-3 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon }) => (
           <div key={label} className={`${CARD} p-5`}>
@@ -70,7 +116,6 @@ const BillingDetails: React.FC = () => {
         ))}
       </div>
 
-      {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 max-w-sm">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -78,7 +123,7 @@ const BillingDetails: React.FC = () => {
             className="w-full pl-9 pr-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm focus:outline-none font-medium focus:ring-2 focus:ring-slate-300 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 dark:placeholder-slate-500" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-sm focus:outline-none bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
+          className="px-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm focus:outline-none bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
           {["All", "Submitted", "Pending"].map(s => <option key={s}>{s}</option>)}
         </select>
         <p className="text-sm font-medium text-slate-800 self-center sm:ml-auto">Showing {filtered.length} of {details.length}</p>
@@ -90,25 +135,24 @@ const BillingDetails: React.FC = () => {
           <table className="min-w-full">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                {["Claim ID","Patient","Service Date","Amount","Status","Insurance","Department","Payment",""].map((h,i) => (
+                {["Claim ID","Patient","Service Date","Amount","Status","Insurance","Department","Payment","Actions"].map((h,i) => (
                   <th key={i} className={TH}>{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody>
               {filtered.length === 0 && (
                 <tr><td colSpan={9} className="px-4 py-12 text-center text-sm font-medium text-slate-800">No billing records match your filters.</td></tr>
               )}
-              {filtered.map(d => (
+              {filtered.map((d, idx) => (
                 <React.Fragment key={d.claimId}>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr style={idx % 2 === 0 ? ROW_ODD : ROW_EVEN} className="hover:opacity-90 transition-opacity">
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{d.claimId}</td>
                     <td className={TDM}>{d.patientName}</td>
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 tabular-nums">{d.serviceDate}</td>
                     <td className="px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-100">${d.amount.toLocaleString()}</td>
                     <td className={TD}>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium
-                        ${d.status === "Submitted" ? "text-slate-800 dark:bg-slate-200 dark:text-slate-800" : "text-slate-800 dark:bg-slate-700 dark:text-slate-300"}`}>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium ${d.status === "Submitted" ? "text-slate-800 dark:bg-slate-200 dark:text-slate-800" : "text-slate-800 dark:bg-slate-700 dark:text-slate-300"}`}>
                         {d.status}
                       </span>
                     </td>
@@ -116,16 +160,17 @@ const BillingDetails: React.FC = () => {
                     <td className={TD}>{d.department}</td>
                     <td className={TD}>{d.paymentMethod}</td>
                     <td className="px-4 py-3">
-                      {/* Expand */}
-                      <button title="View details" onClick={() => setExpandedRow(expandedRow === d.claimId ? null : d.claimId)} className={BTN_ICON}>
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedRow === d.claimId ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} /></svg>
-                      </button>
+                      <ActionsDropdown>
+                        <DropdownItem icon={MoreDetailsIcon} label="More Details" onClick={() => setExpandedRow(expandedRow === d.claimId ? null : d.claimId)} />
+                        <DropdownItem icon={EdiIcon}         label="Download EDI" onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)} />
+                        <DropdownItem icon={PdfIcon}         label="Download PDF" onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)} />
+                      </ActionsDropdown>
                     </td>
                   </tr>
                   {expandedRow === d.claimId && (
                     <tr className="bg-slate-50/60 dark:bg-slate-700/20">
                       <td colSpan={9} className="px-6 py-4">
-                        <div className="grid grid-cols-4 gap-6 text-sm mb-4">
+                        <div className="grid grid-cols-4 gap-6 text-sm mb-2">
                           {[
                             { l: "Encounter ID",   v: d.encounterId },
                             { l: "Transaction ID", v: d.paymentMethod !== "Cash" ? d.transactionId ?? "—" : "—" },
@@ -135,18 +180,6 @@ const BillingDetails: React.FC = () => {
                             <div key={l}><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">{l}</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{v}</p></div>
                           ))}
                           <div className="col-span-4"><p className="text-sm font-medium text-slate-800 uppercase tracking-wide mb-1 dark:text-white">Notes</p><p className="text-sm font-medium text-slate-800 dark:text-slate-300">{d.notes}</p></div>
-                        </div>
-                        <div className="flex gap-2">
-                          {/* Download EDI */}
-                          <button title="Download EDI file" onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)}
-                            className="bg-slate-200 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-800 dark:text-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:text-white dark:hover:bg-slate-700 transition">
-                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
-                          </button>
-                          {/* Download PDF */}
-                          <button title="Download PDF file" onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)}
-                            className="bg-slate-200 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-800 dark:text-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:text-white dark:hover:bg-slate-700 transition">
-                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -176,17 +209,18 @@ const BillingDetails: React.FC = () => {
               <div><p className="text-slate-800 font-medium mb-0.5">Date</p><p className="font-medium text-slate-800 dark:text-slate-300">{d.serviceDate}</p></div>
             </div>
             <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
-              <button title="Download EDI" onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)}
-                className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12" /></svg>EDI
+              <button onClick={() => downloadClaimEDI(d.claimId, d.patientName, d.amount)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {EdiIcon} EDI
               </button>
-              <button title="Download PDF" onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)}
-                className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>PDF
+              <button onClick={() => downloadClaimPDF(d.claimId, d.patientName, d.amount, d.status)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-700 hover:text-white transition">
+                {PdfIcon} PDF
               </button>
             </div>
           </div>
         ))}
+      </div>
       </div>
     </Layout>
   );
