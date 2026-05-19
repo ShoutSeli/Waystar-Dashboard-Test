@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import Layout from "./Layout";
 
 interface Rejection {
@@ -24,31 +25,47 @@ const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-m
 /** Dropdown menu that closes when clicking outside */
 const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    const h = (e: MouseEvent) => {
+      if (
+        btnRef.current && !btnRef.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
   }, []);
 
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setCoords({ top: r.bottom + window.scrollY + 4, left: r.left + window.scrollX, width: r.width });
+    }
+    setOpen(o => !o);
+  };
+
   return (
-    <div ref={ref} className="relative inline-block">
-      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+    <div className="relative inline-block">
+      <button ref={btnRef} onClick={handleOpen} className={ACTIONS_BTN}>
         Actions
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      {open && (
+      {open && ReactDOM.createPortal(
         <div
-          className="absolute right-0 z-30 mt-1 w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+          ref={menuRef}
           onClick={() => setOpen(false)}
+          style={{ position: "absolute", top: coords.top, left: coords.left, minWidth: coords.width, zIndex: 9999 }}
+          className="w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
         >
           {children}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -109,9 +126,9 @@ const RejectionReview: React.FC = () => {
   );
 
   const summaryCards = [
-    { label: "Total Rejections",    value: rejections.length, icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" },
-    { label: "Departments Affected", value: deptCount,         icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
-    { label: "Top Reason",          value: topReason,         icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z", small: true },
+    { label: "Total Rejections",    value: rejections.length, color: "#ef4444", icon: <><path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" /></> },
+    { label: "Departments Affected", value: deptCount,        color: "#3b82f6", icon: <><path fillRule="evenodd" d="M4.5 2.25a.75.75 0 000 1.5v16.5h-.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5h-.75V3.75a.75.75 0 000-1.5h-15zM9 6a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H9zm-.75 3.75A.75.75 0 019 9h1.5a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75zM9 12a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H9zm3.75-5.25A.75.75 0 0113.5 6H15a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zM13.5 9a.75.75 0 000 1.5H15A.75.75 0 0015 9h-1.5zm-.75 3.75a.75.75 0 01.75-.75H15a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zM9 19.5v-2.25a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75v2.25a.75.75 0 01-.75.75h-4.5A.75.75 0 019 19.5z" clipRule="evenodd" /></> },
+    { label: "Top Reason",          value: topReason,         color: "#f97316", icon: <><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" /></>, small: true },
   ];
 
   // Shared icon components
@@ -124,20 +141,21 @@ const RejectionReview: React.FC = () => {
   return (
     <Layout currentPage="Rejection Review">
 
-      <div className="animate-cascade">
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        {summaryCards.map(({ label, value, icon, small }) => (
-          <div key={label} className={`${CARD} p-5`}>
-            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-800 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
+        {summaryCards.map(({ label, value, icon, color, small }) => (
+          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+                {icon}
               </svg>
             </div>
-            <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
-            <p className={`font-medium text-slate-800 dark:text-slate-100 ${small ? "text-sm leading-snug" : "text-sm"}`} title={String(value)}>
-              {small ? <span className="line-clamp-2">{value}</span> : value}
-            </p>
+            <div className="min-w-0">
+              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100" title={String(value)}>
+                {small ? <span className="line-clamp-2">{value}</span> : value}
+              </p>
+            </div>
           </div>
         ))}
       </div>
@@ -242,7 +260,6 @@ const RejectionReview: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
       </div>
     </Layout>
   );

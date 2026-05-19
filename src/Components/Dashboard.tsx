@@ -79,30 +79,33 @@ const Dashboard: React.FC = () => {
   ];
 
   const summaryCards = [
-    { label: "Submitted Claims", value: claimsData.submitted.toLocaleString(), icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
-    { label: "Approved Claims",  value: claimsData.approved.toLocaleString(),  icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Rejected Claims",  value: claimsData.rejected.toLocaleString(),  icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Approval Rate",    value: `${approvalRate}%`,                    icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" },
+    { label: "Submitted Claims", value: claimsData.submitted.toLocaleString(), color: "#808080", icon: <><path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM9.75 14.25a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75zm0-3a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75zM9 10.5a.75.75 0 01.75-.75H15a.75.75 0 010 1.5H9.75A.75.75 0 019 10.5z" clipRule="evenodd" /><path d="M12 .75a.75.75 0 01.53.22l3.5 3.5a.75.75 0 01.22.53V6a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75V1.5A.75.75 0 0112 .75z" /></> },
+    { label: "Approved Claims",  value: claimsData.approved.toLocaleString(),  color: "#FFA500", icon: <><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" /></> },
+    { label: "Rejected Claims",  value: claimsData.rejected.toLocaleString(),  color: "#FF0000", icon: <><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" /></> },
+    { label: "Approval Rate",    value: `${approvalRate}%`,                    color: "#a855f7", icon: <><path fillRule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clipRule="evenodd" /><path fillRule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z" clipRule="evenodd" /></> },
   ];
 
   return (
     <Layout currentPage="Dashboard">
-      <div className="animate-cascade">
-        <div className="mb-6">
-          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:text-white dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
-            Live · updates every 5 seconds
-          </span>
-        </div>
+      <div className="mb-6">
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-800 bg-white dark:bg-slate-800 border border-slate-200 dark:text-white dark:border-slate-700 shadow-sm px-3 py-1.5 rounded-full">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+          Live · updates every 5 seconds
+        </span>
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {summaryCards.map(({ label, value, icon }) => (
-          <div key={label} className={`${CARD} p-5`}>
-            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
+        {summaryCards.map(({ label, value, icon, color }) => (
+          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+                {icon}
+              </svg>
             </div>
-            <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            <div className="min-w-0">
+              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -202,7 +205,6 @@ const Dashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
       </div>
     </Layout>
   );

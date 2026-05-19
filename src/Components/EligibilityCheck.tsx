@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import Layout from "./Layout";
 import { useNotifications } from "../context/NotificationContext";
 
@@ -28,24 +29,47 @@ const statusCls: Record<string, string> = {
 
 const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const h = (e: MouseEvent) => {
+      if (
+        btnRef.current && !btnRef.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) setOpen(false);
+    };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setCoords({ top: r.bottom + window.scrollY + 4, left: r.left + window.scrollX, width: r.width });
+    }
+    setOpen(o => !o);
+  };
+
   return (
-    <div ref={ref} className="relative inline-block">
-      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+    <div className="relative inline-block">
+      <button ref={btnRef} onClick={handleOpen} className={ACTIONS_BTN}>
         Actions
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      {open && (
-        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1" onClick={() => setOpen(false)}>
+      {open && ReactDOM.createPortal(
+        <div
+          ref={menuRef}
+          onClick={() => setOpen(false)}
+          style={{ position: "absolute", top: coords.top, left: coords.left, minWidth: coords.width, zIndex: 9999 }}
+          className="w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+        >
           {children}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -129,9 +153,9 @@ const EligibilityCheck: React.FC = () => {
   const pendingCount     = patients.filter(p => p.status === "Pending" || p.status === "Checking...").length;
 
   const summaryCards = [
-    { label: "Eligible",           value: eligibleCount,    icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Not Eligible",       value: notEligibleCount, icon: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Pending / Checking", value: pendingCount,     icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label: "Eligible",           value: eligibleCount,    color: "#22c55e", icon: <><path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" /></> },
+    { label: "Not Eligible",       value: notEligibleCount, color: "#ef4444", icon: <><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" /></> },
+    { label: "Pending / Checking", value: pendingCount,     color: "#f97316", icon: <><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" /></> },
   ];
 
   return (
@@ -143,16 +167,19 @@ const EligibilityCheck: React.FC = () => {
         </div>
       )}
 
-      <div className="animate-cascade">
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        {summaryCards.map(({ label, value, icon }) => (
-          <div key={label} className={`${CARD} p-5`}>
-            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
+        {summaryCards.map(({ label, value, icon, color }) => (
+          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+                {icon}
+              </svg>
             </div>
-            <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            <div className="min-w-0">
+              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -305,7 +332,6 @@ const EligibilityCheck: React.FC = () => {
           </div>
         </div>
       )}
-      </div>
     </Layout>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import Layout from "./Layout";
 
 interface PayerView {
@@ -31,24 +32,47 @@ const BTN_PRIMARY = "inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-wh
 
 const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const h = (e: MouseEvent) => {
+      if (
+        btnRef.current && !btnRef.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) setOpen(false);
+    };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setCoords({ top: r.bottom + window.scrollY + 4, left: r.left + window.scrollX, width: r.width });
+    }
+    setOpen(o => !o);
+  };
+
   return (
-    <div ref={ref} className="relative inline-block">
-      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+    <div className="relative inline-block">
+      <button ref={btnRef} onClick={handleOpen} className={ACTIONS_BTN}>
         Actions
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      {open && (
-        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1" onClick={() => setOpen(false)}>
+      {open && ReactDOM.createPortal(
+        <div
+          ref={menuRef}
+          onClick={() => setOpen(false)}
+          style={{ position: "absolute", top: coords.top, left: coords.left, minWidth: coords.width, zIndex: 9999 }}
+          className="w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
+        >
           {children}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -199,9 +223,9 @@ const InsurancePayerView: React.FC = () => {
   const departments    = ["All", ...new Set(payers.map(p => p.department))];
 
   const summaryCards = [
-    { label: "Total Claims",    value: totalClaims,    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
-    { label: "Unique Insurers", value: uniqueInsurers, icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
-    { label: "Total Patients",  value: totalPatients,  icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+    { label: "Total Claims",    value: totalClaims,    color: "#ef4444", icon: <><path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM9.75 14.25a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75zm0-3a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75zM9 10.5a.75.75 0 01.75-.75H15a.75.75 0 010 1.5H9.75A.75.75 0 019 10.5z" clipRule="evenodd" /><path d="M12 .75a.75.75 0 01.53.22l3.5 3.5a.75.75 0 01.22.53V6a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75V1.5A.75.75 0 0112 .75z" /></> },
+    { label: "Unique Insurers", value: uniqueInsurers, color: "#3b82f6", icon: <><path fillRule="evenodd" d="M4.5 2.25a.75.75 0 000 1.5v16.5h-.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5h-.75V3.75a.75.75 0 000-1.5h-15zM9 6a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H9zm-.75 3.75A.75.75 0 019 9h1.5a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75zM9 12a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H9zm3.75-5.25A.75.75 0 0113.5 6H15a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zM13.5 9a.75.75 0 000 1.5H15A.75.75 0 0015 9h-1.5zm-.75 3.75a.75.75 0 01.75-.75H15a.75.75 0 010 1.5h-1.5a.75.75 0 01-.75-.75zM9 19.5v-2.25a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75v2.25a.75.75 0 01-.75.75h-4.5A.75.75 0 019 19.5z" clipRule="evenodd" /></> },
+    { label: "Total Patients",  value: totalPatients,  color: "#a855f7", icon: <><path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" /></> },
   ];
 
   return (
@@ -213,16 +237,19 @@ const InsurancePayerView: React.FC = () => {
         </div>
       )}
 
-      <div className="animate-cascade">
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        {summaryCards.map(({ label, value, icon }) => (
-          <div key={label} className={`${CARD} p-5`}>
-            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-800 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
+        {summaryCards.map(({ label, value, icon, color }) => (
+          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+                {icon}
+              </svg>
             </div>
-            <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            <div className="min-w-0">
+              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -400,7 +427,6 @@ const InsurancePayerView: React.FC = () => {
           </div>
         </div>
       )}
-      </div>
     </Layout>
   );
 };

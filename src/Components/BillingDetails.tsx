@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import Layout from "./Layout";
 import { downloadClaimEDI, downloadClaimPDF } from "../utils/downloadClaim";
 
@@ -24,40 +25,54 @@ const ACTIONS_BTN = "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-m
 
 const ActionsDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const h = (e: MouseEvent) => {
+      if (
+        btnRef.current && !btnRef.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) setOpen(false);
+    };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setCoords({ top: r.bottom + window.scrollY + 4, left: r.left + window.scrollX, width: r.width });
+    }
+    setOpen(o => !o);
+  };
+
   return (
-    <div ref={ref} className="relative inline-block">
-      <button onClick={() => setOpen(o => !o)} className={ACTIONS_BTN}>
+    <div className="relative inline-block">
+      <button ref={btnRef} onClick={handleOpen} className={ACTIONS_BTN}>
         Actions
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      {open && (
-        <div className="absolute right-0 z-30 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
-          style={{
-            animation: "dropDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
-          }}
+      {open && ReactDOM.createPortal(
+        <div
+          ref={menuRef}
           onClick={() => setOpen(false)}
+          style={{ position: "absolute", top: coords.top, left: coords.left, minWidth: coords.width, zIndex: 9999 }}
+          className="w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-1"
         >
           {children}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
 };
 
 const DropdownItem: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
-  <button onClick={onClick} className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700"
-    style={{
-      transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-    }}
-  >
+  <button onClick={onClick} className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 transition-colors">
     {icon}{label}
   </button>
 );
@@ -96,22 +111,25 @@ const BillingDetails: React.FC = () => {
   );
 
   const summaryCards = [
-    { label: "Total Billed", value: `$${totalBilled.toLocaleString()}`, icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Submitted",    value: submittedCount,                     icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { label: "Pending",      value: pendingCount,                       icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label: "Total Billed", value: `$${totalBilled.toLocaleString()}`, color: "#ef4444", icon: <><path d="M12 1.5a.75.75 0 01.75.75V7.5h-1.5V2.25A.75.75 0 0112 1.5zM11.25 7.5v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V7.5h3.75a3 3 0 013 3v9a3 3 0 01-3 3h-9a3 3 0 01-3-3v-9a3 3 0 013-3h3.75z" /></> },
+    { label: "Submitted",    value: submittedCount,                     color: "#22c55e", icon: <><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" /></> },
+    { label: "Pending",      value: pendingCount,                       color: "#f97316", icon: <><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" /></> },
   ];
 
   return (
     <Layout currentPage="Billing Details">
-      <div className="animate-cascade">
       <div className="grid grid-cols-3 gap-4 mb-6">
-        {summaryCards.map(({ label, value, icon }) => (
-          <div key={label} className={`${CARD} p-5`}>
-            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={icon} /></svg>
+        {summaryCards.map(({ label, value, icon, color }) => (
+          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+                {icon}
+              </svg>
             </div>
-            <p className="text-base font-medium text-slate-800 dark:text-slate-400 mb-1">{label}</p>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            <div className="min-w-0">
+              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -220,7 +238,6 @@ const BillingDetails: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
       </div>
     </Layout>
   );
