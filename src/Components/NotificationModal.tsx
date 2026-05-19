@@ -23,13 +23,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ notification, isO
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
         onClick={onDismiss}
         style={{ animation: "fadeIn 0.2s ease-in-out" }}
       />
 
       <div
-        className="fixed inset-0 flex items-center justify-center z-50 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
         onClick={(e) => e.target === e.currentTarget && onDismiss()}
       >
         <div
