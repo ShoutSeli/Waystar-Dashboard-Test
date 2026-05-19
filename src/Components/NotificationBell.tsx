@@ -52,6 +52,7 @@ const NotificationBell: React.FC = () => {
     markAsRead(n.id);
     setSelectedNotification(n);
     setModalOpen(true);
+    setOpen(false);
   };
 
   return (
