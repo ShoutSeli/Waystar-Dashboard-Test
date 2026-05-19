@@ -23,7 +23,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ notification, isO
   return (
     <>
       <div
-        className="fixed inset-0 z-40 bg-black/40"
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
         onClick={onDismiss}
         style={{ animation: "fadeIn 0.2s ease-in-out" }}
       />
