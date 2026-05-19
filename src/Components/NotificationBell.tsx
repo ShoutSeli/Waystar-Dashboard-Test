@@ -28,7 +28,9 @@ const NotificationBell: React.FC = () => {
   const [shake, setShake] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<AppNotification | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [scrollPos, setScrollPos] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   // Shake bell on new notification
   useEffect(() => {
@@ -48,11 +50,18 @@ const NotificationBell: React.FC = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Restore scroll position when modal closes
+  useEffect(() => {
+    if (!modalOpen && listRef.current) {
+      setTimeout(() => { listRef.current?.scrollTo(0, scrollPos); }, 0);
+    }
+  }, [modalOpen, scrollPos]);
+
   const handleItemClick = (n: AppNotification) => {
+    if (listRef.current) setScrollPos(listRef.current.scrollTop);
     markAsRead(n.id);
     setSelectedNotification(n);
     setModalOpen(true);
-    setOpen(false);
   };
 
   return (
@@ -107,7 +116,7 @@ const NotificationBell: React.FC = () => {
           </div>
 
           {/* List */}
-          <div className="max-h-[420px] overflow-y-auto divide-y divide-slate-50 dark:divide-slate-700">
+          <div className="max-h-[420px] overflow-y-auto divide-y divide-slate-50 dark:divide-slate-700" ref={listRef}>
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-slate-800">
                 <svg className="w-10 h-10 mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
