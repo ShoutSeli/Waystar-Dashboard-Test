@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNotifications, type AppNotification, type NotificationType } from "../context/NotificationContext";
 import NotificationModal from "./NotificationModal";
 
-const typeConfig: Record<NotificationType, { icon: string; dot: string; iconPath: string; border: string; accent: string }> = {
-  success: { icon: "text-green-600", dot: "bg-green-500",
-    iconPath: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", border: "border-green-500", accent: "text-green-600" },
-  warning: { icon: "text-amber-600",   dot: "bg-amber-400",
-    iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z", border: "border-amber-500", accent: "text-amber-600" },
-  error:   { icon: "text-red-600",     dot: "bg-red-500",
-    iconPath: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z", border: "border-red-500", accent: "text-red-600" },
-  info:    { icon: "text-blue-600",    dot: "bg-blue-500",
-    iconPath: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z", border: "border-blue-500", accent: "text-blue-600" },
+const typeConfig: Record<NotificationType, { bg: string; icon: string; dot: string; iconPath: string }> = {
+  success: { bg: "bg-slate-100", icon: "text-slate-700", dot: "bg-slate-500",
+    iconPath: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+  warning: { bg: "bg-slate-100",   icon: "text-slate-700",   dot: "bg-slate-400",
+    iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" },
+  error:   { bg: "bg-slate-100",     icon: "text-slate-700",     dot: "bg-slate-500",
+    iconPath: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" },
+  info:    { bg: "bg-slate-100",    icon: "text-slate-700",    dot: "bg-slate-500",
+    iconPath: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
 };
 
 const relativeTime = (date: Date): string => {
@@ -106,7 +106,7 @@ const NotificationBell: React.FC = () => {
           </div>
 
           {/* List */}
-          <div className="max-h-[420px] overflow-y-auto">
+          <div className="max-h-[420px] overflow-y-auto divide-y divide-slate-50 dark:divide-slate-700">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-slate-800">
                 <svg className="w-10 h-10 mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,26 +121,26 @@ const NotificationBell: React.FC = () => {
                 const cfg = typeConfig[n.type];
                 return (
                   <button key={n.id} onClick={() => handleItemClick(n)}
-                    className={`w-full text-left flex items-start gap-3 px-4 py-3 transition border-l-2 ${cfg.border} hover:bg-slate-50 dark:hover:bg-slate-700/50 ${!n.read ? "dark:bg-slate-700/10" : ""}`}
+                    className={`w-full text-left flex items-start gap-3 px-4 py-3 transition hover:bg-slate-50 dark:hover:bg-slate-700/50 ${!n.read ? "bg-slate-50 dark:bg-slate-700/20" : ""}`}
                     style={{
                       transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
                     }}
                   >
-                    <div className={`p-2 rounded-lg shrink-0 mt-0.5`}>
-                      <svg className={`w-9 h-9 ${cfg.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <div className={`${cfg.bg} p-1.5 rounded-lg shrink-0 mt-0.5`}>
+                      <svg className={`w-10 h-10 ${cfg.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d={cfg.iconPath} />
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <p className={`text-sm font-semibold truncate ${n.read ? "text-slate-700 dark:text-slate-400" : "text-slate-900 dark:text-slate-100"}`}>
+                        <p className={`text-sm font-medium truncate ${n.read ? "text-slate-800 dark:text-slate-400" : "text-slate-900 dark:text-slate-100"}`}>
                           {n.title}
                         </p>
-                        <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400 shrink-0 mt-0.5">{relativeTime(n.timestamp)}</span>
+                        <span className="text-[10px] font-medium text-slate-800 dark:text-slate-400 shrink-0 mt-0.5">{relativeTime(n.timestamp)}</span>
                       </div>
-                      <p className="text-sm text-slate-700 dark:text-slate-400 mt-1.5 leading-relaxed">{n.message}</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-400 mt-0.5 leading-relaxed">{n.message}</p>
                       {n.claimId && (
-                        <span className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200">
+                        <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200">
                           {n.claimId}
                         </span>
                       )}
