@@ -62,7 +62,18 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage }) => {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden font-nohemi bg-slate-50 dark:bg-slate-900">
+      <div className="flex h-screen overflow-hidden font-nohemi bg-slate-50 dark:bg-slate-900">
+
+
+      {/* When a modal is open, blur the whole app behind it (modals are higher z-index) */}
+      <style>{`
+        .modal-open-app-blur {
+          filter: blur(6px);
+          transform: scale(1.01);
+        }
+      `}</style>
+
+
 
       {/* Mobile overlay backdrop */}
       {sidebarOpen && (
