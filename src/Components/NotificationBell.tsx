@@ -86,7 +86,7 @@ const NotificationBell: React.FC = () => {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 z-50 overflow-hidden"
+        <div className={`absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden ${modalOpen ? "z-20" : "z-50"}`}
           style={{
             animation: "dropDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
           }}
