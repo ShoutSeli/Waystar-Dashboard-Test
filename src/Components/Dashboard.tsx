@@ -96,17 +96,21 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon, color }) => (
-          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
-                {icon}
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{value}</p>
-            </div>
+<div
+          key={label}
+          className={`${CARD} p-8 flex items-center gap-4 border-transparent`}
+          style={{ backgroundColor: color }}
+        >
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/15">
+            <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#fff' }}>
+              {icon}
+            </svg>
           </div>
+          <div className="min-w-0">
+            <p className="text-base font-medium mb-1 text-white">{label}</p>
+            <p className="text-sm font-medium text-white">{value}</p>
+          </div>
+        </div>
         ))}
       </div>
 

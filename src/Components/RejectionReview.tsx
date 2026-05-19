@@ -142,17 +142,21 @@ const RejectionReview: React.FC = () => {
     <Layout currentPage="Rejection Review">
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-10 mb-6">
         {summaryCards.map(({ label, value, icon, color, small }) => (
-          <div key={label} className={`${CARD} p-5 flex items-center gap-4`}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" style={{ color }}>
+<div
+            key={label}
+            className={`${CARD} p-8 flex items-center gap-4 border-transparent`}
+            style={{ backgroundColor: color }}
+          >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/15">
+              <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#fff' }}>
                 {icon}
               </svg>
             </div>
             <div className="min-w-0">
-              <p className="text-base font-medium mb-1" style={{ color }}>{label}</p>
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-100" title={String(value)}>
+              <p className="text-base font-medium mb-1 text-white">{label}</p>
+              <p className="text-sm font-medium text-white" title={String(value)}>
                 {small ? <span className="line-clamp-2">{value}</span> : value}
               </p>
             </div>
