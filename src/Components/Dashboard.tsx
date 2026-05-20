@@ -94,13 +94,13 @@ const Dashboard: React.FC = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {summaryCards.map(({ label, value, icon, color }) => (
-<div
-          key={label}
-          className={`${CARD} p-8 flex items-center gap-4 border-transparent`}
-          style={{ backgroundColor: color }}
-        >
+          <div
+            key={label}
+            className={`${CARD} p-8 flex items-center gap-4 border-transparent`}
+            style={{ backgroundColor: color }}
+          >
           <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/15">
             <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#fff' }}>
               {icon}
@@ -113,7 +113,7 @@ const Dashboard: React.FC = () => {
         </div>
         ))}
       </div>
-
+    
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white dark:bg-slate-800 shadow border border-slate-100 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
@@ -130,8 +130,12 @@ const Dashboard: React.FC = () => {
                 { style: { left: "-5px", bottom: "-5px" }, idx: 1 },
                 { style: { left: "-5px", top: "-5px" }, idx: 2 },
               ].map(({ style, idx }) => (
-                <div key={idx} className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
-                  style={{ ...style, opacity: hiddenSegments.has(idx) ? 0.5 : 1 }} onClick={() => toggleSegment(idx)}>
+                <div
+                  key={idx}
+                  className="absolute flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
+                  style={{ ...style, opacity: hiddenSegments.has(idx) ? 0.5 : 1 }}
+                  onClick={() => toggleSegment(idx)}
+                >
                   <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: allColors[idx] }} />
                   <span className="text-sm font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">{allLabels[idx]}</span>
                 </div>
@@ -139,14 +143,15 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="lg:hidden">
-            <div className="flex justify-center mb-6">
-              <div className="relative w-64 h-48">
-                <div style={{ position: "absolute", inset: 0 }}>
-                  <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
+            <div className="flex flex-col items-center">
+              <div className="flex justify-center mb-6">
+                <div className="relative w-64 h-48">
+                  <div style={{ position: "absolute", inset: 0 }}>
+                    <Pie data={pieData} options={{ plugins: { legend: { display: false } } }} />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-4 px-2">
+              <div className="flex flex-row flex-wrap items-center justify-center gap-3 px-2 mt-10">
               {allLabels.map((label, index) => (
                 <div key={label} className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity"
                   style={{ opacity: hiddenSegments.has(index) ? 0.5 : 1 }} onClick={() => toggleSegment(index)}>
@@ -157,6 +162,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
         <div className="bg-white dark:bg-slate-800 shadow border border-slate-100 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-base font-medium text-slate-800 dark:text-slate-100">Monthly Trends</h3>

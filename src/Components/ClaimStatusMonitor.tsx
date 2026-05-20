@@ -147,7 +147,7 @@ const ClaimStatusMonitor: React.FC = () => {
 
   return (
     <Layout currentPage="Claim Status Monitor">
-      <div className="grid grid-cols-3 gap-10 mb-6">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-6">
         {summaryCards.map(({ label, value, icon, color }) => (
 <div
             key={label}
